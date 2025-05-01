@@ -23,18 +23,22 @@ Balance Projector provides a complete pipeline from raw data ingestion to model 
 
 ---
 
-### 🧾 Federal Dataset Integration Templates
+### 🧠 Machine Learning in a Regulatory Environment
 
-Custom code templates are included for parsing and aligning:
+- Forecast balances for **Expired vs. Unexpired accounts**
+- Incorporate **Period of Availability (PoA)**, fiscal flags, and **transfer actions**
+- Embed OMB guidance into modeling features (e.g., apportionment limits, program activities)
 
-- **OMB SF-133 Reports**: Join by TAS or Account A and reshape to fiscal month/quarter granularity.
-- **MAX Schedule-X**: Capture enacted budget data and program activity descriptions.
-- **GTAS Trial Balances**: Align actual trial balances by fiscal year and subfunction codes.
-- **Apportionment Snapshots**: For agencies using internal XML-based budget execution reports.
+### 🧾 Integrated Federal Data Templates
 
-All templates are provided using `pandas` and are notebook-integrated with placeholder paths.
+- **SF-133**: Status of Budget Execution CSV import + reshaping
+- **GTAS**: Trial balance integration for actuals by TAS
+- **MAX Schedule A/X**: Enacted + requested budget crosswalks
+- **Agency Apportionments**: XML or CSV-based loader
+- **Data.gov**: USAspending, object class, and program activity support
 
 ---
+
 
 ### 🧮 Multi-Model Performance Comparison
 
@@ -45,6 +49,22 @@ Models are evaluated using a consistent schema with a visual and tabular dashboa
 - Actual vs. predicted overlays and error bands
 
 Future enhancements will support model confidence intervals and budget violation detection.
+
+---
+
+## 🧮 Supported Models
+
+### ✅ Regression Models
+
+| Model                        | Module                                   |
+|-----------------------------|------------------------------------------|
+| Linear Regression           | `sklearn.linear_model.LinearRegression`  |
+| Decision Tree Regressor     | `sklearn.tree.DecisionTreeRegressor`     |
+| Random Forest Regressor     | `sklearn.ensemble.RandomForestRegressor`|
+| Gradient Boosting Regressor | `sklearn.ensemble.GradientBoostingRegressor` |
+| XGBoost Regressor *(optional)* | `xgboost.XGBRegressor`             |
+
+> Each model shares a unified interface and is trained and evaluated under a standardized loop for fairness.
 
 ---
 
@@ -77,6 +97,41 @@ Balance Projector implements and compares the following regression models:
 Each model is trained using unified logic for fair and comparable evaluation across time series-structured or tabular datasets.
 
 ---
+## 🧪 Feature Engineering
+
+- **Lag Variables**: Capture temporal dependencies in obligations/outlays
+- **Growth Rates**: Quarter-over-quarter and year-over-year trends
+- **Ratios**: Unobligated-to-appropriated balance, obligation rates
+- **Time Markers**: Flags for EOY, CR periods, seasonal inflections
+- **Log and Power Transforms**: Handle skew and nonlinear exposure
+
+---
+
+## 📊 Visual & Quantitative Evaluation
+
+### 📈 Charts
+- Line plots of forecasted vs. actual balances per TAS
+- Residual scatterplots + histograms
+- Error bars across time segments
+- Comparative bar charts for MAE, MSE, RMSE
+
+### 📏 Metrics
+- **R²**: Variance explained
+- **MAE**: Absolute error
+- **MSE / RMSE**: Penalize large residuals
+- **MAPE (optional)**: Scaled percent error
+- **Execution Time**: For training and inference
+
+---
+
+## 🏛️ Use Cases in Government
+
+- **OMB Analysts**: Model PoA burn rates, EOY projections
+- **IG/OIG**: Track abnormal obligation behaviors
+- **Agencies**: Budget execution validation and outlay pacing
+- **Congressional Staff**: Score reprogramming risk, monitor carryover balances
+
+---
 
 ### 📊 Forecasting Federal Account Balances
 
@@ -96,6 +151,7 @@ Balance Projector is purpose-built to support the **federal appropriations commu
   - `Treasury Account Symbol (TAS)`
   - `Period of Availability`
   - `Obligations`, `Outlays`, `Unobligated Balances`, `Appropriations`, etc.
+
 - Forecasts can be made at:
   - **Account level (e.g., 012-1234)** using aggregated totals
   - **Budget Object Class (BOC) level**
