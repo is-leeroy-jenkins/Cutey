@@ -6,7 +6,7 @@
 The Cutey **Balance Projector** is a machine learning toolkit for federal budget execution & finance implemented in Python. It empowers data scientists, budget analysts, and federal agency personnel to train, compare, and visualize multiple regression models for **forecasting the balances of federal appropriation accounts**. Built using `Scikit`, `TensorFlow`, and `PyTorch`, the notebook integrates structured budget execution data—such as SF-133 reports from OMB and agency-specific datasets from Data.gov—to inform predictive models across multiple federal financial scenarios.
 
 ---
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/is-leeroy-jenkins/Cutey/blob/main/ipynb/balances.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/is-leeroy-jenkins/Cutey/blob/main/balances.ipynb)
 
 
 
