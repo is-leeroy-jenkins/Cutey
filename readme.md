@@ -32,11 +32,23 @@ Balance Projector provides a complete pipeline from raw data ingestion to model 
 ### 🧾 Integrated Federal Data Templates
 
 - **SF-133**: Status of Budget Execution CSV import + reshaping
-- **GTAS**: Trial balance integration for actuals by TAS
+- **GTAS**: Trial balance integration for actuals by TAS ![more](https://fiscal.treasury.gov/gtas/)
 - **MAX Schedule A/X**: Enacted + requested budget crosswalks
 - **Agency Apportionments**: XML or CSV-based loader
 - **Data.gov**: USAspending, object class, and program activity support
 
+### Vectorized Datasets
+
+- [Appropriations](https://huggingface.co/datasets/leeroy-jankins/Appropriations) - Enacted appropriations from 1996-2024 available for fine-tuning learning models
+- [Regulations](https://huggingface.co/datasets/leeroy-jankins/Regulations/tree/main) - Collection of federal regulations on the use of appropriatied funds
+- [SF-133](https://huggingface.co/datasets/leeroy-jankins/SF133) - The Report on Budget Execution and Budgetary Resources
+- [Balances](https://huggingface.co/datasets/leeroy-jankins/Balances) -  U.S. federal agency Account Balances (File A) submitted as part of the DATA Act 2014.
+- [Outlays](https://huggingface.co/datasets/leeroy-jankins/Outlays) -  The actual disbursements of funds by the U.S. federal government from 1962 to 2025
+- [SF-133](https://huggingface.co/datasets/leeroy-jankins/SF133) The Report on Budget Execution and Budgetary Resources
+- [Balances](https://huggingface.co/datasets/leeroy-jankins/Balances) - U.S. federal agency Account Balances (File A) submitted as part of the DATA Act 2014.
+- [Circular A11](https://huggingface.co/datasets/leeroy-jankins/OMB-Circular-A-11) - Guidance from OMB on the preparation, submission, and execution of the federal budget
+- [Fastbook](https://huggingface.co/datasets/leeroy-jankins/FastBook) - Treasury guidance on federal ledger accouts
+- [Redbook](https://huggingface.co/datasets/leeroy-jankins/RedBook) - The Principles of Appropriations Law (Volumes I & II).
 ---
 
 
