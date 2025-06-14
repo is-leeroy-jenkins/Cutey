@@ -32,7 +32,7 @@ Balance Projector provides a complete pipeline from raw data ingestion to model 
 ### 🧾 Integrated Federal Data Templates
 
 - **SF-133**: Status of Budget Execution CSV import + reshaping
-- **GTAS**: Trial balance integration for actuals by TAS ![more](https://fiscal.treasury.gov/gtas/)
+- **GTAS**: Trial balance integration for actuals by TAS [more](https://fiscal.treasury.gov/gtas/)
 - **MAX Schedule A/X**: Enacted + requested budget crosswalks
 - **Agency Apportionments**: XML or CSV-based loader
 - **Data.gov**: USAspending, object class, and program activity support
