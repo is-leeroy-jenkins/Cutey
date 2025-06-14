@@ -25,7 +25,7 @@ Balance Projector provides a complete pipeline from raw data ingestion to model 
 
 ### 🧠 Machine Learning in a Regulatory Environment
 
-- Forecast balances for **Expired vs. Unexpired accounts**
+- Forecast balances for **No-year, Multi-year, and Expiring Accounts**
 - Incorporate **Period of Availability (PoA)**, fiscal flags, and **transfer actions**
 - Embed OMB guidance into modeling features (e.g., apportionment limits, program activities)
 
