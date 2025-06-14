@@ -36,7 +36,7 @@ Balance Projector provides a complete pipeline from raw data ingestion to model 
 - **[Agency Apportionments](https://openomb.org/)**: XML or CSV-based loader
 - **[Data.gov](https://data.gov/)**: USAspending, object class, and program activity support
 
-### 📦 Vectorized Datasets
+### 📦 Fine-tuning Datasets
 
 - [Appropriations](https://huggingface.co/datasets/leeroy-jankins/Appropriations) - Enacted appropriations from 1996-2024 available for fine-tuning learning models
 - [Regulations](https://huggingface.co/datasets/leeroy-jankins/Regulations/tree/main) - Collection of federal regulations on the use of appropriatied funds
