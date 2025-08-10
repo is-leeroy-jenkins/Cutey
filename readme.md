@@ -295,7 +295,7 @@ y = df["target_column"]
 
 ## 📝 License
 
-Cutey-Py is published under the [MIT General Public License v3](https://github.com/is-leeroy-jenkins/Cutey/blob/main/LICENSE).
+Cutey-Py is published under the [MIT General Public License v3](https://github.com/is-leeroy-jenkins/Cutey/blob/main/LICENSE.txt).
 
 
 ---
