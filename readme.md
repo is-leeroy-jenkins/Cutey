@@ -110,7 +110,7 @@ Future enhancements will support model confidence intervals and budget violation
 
 
 
-## 🧠 Regulatory Context-Aware Modeling
+## 🧠 Regulation-Aware Context Modeling
 
 #### The models are aligned with federal fiscal law and budget practice, allowing for:
 
