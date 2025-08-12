@@ -11,7 +11,7 @@ ___
 
 
 
-## 🔍 Predictive Pipeline
+### 🔍 Predictive Pipeline
 
 #### Balance Projector provides a complete pipeline from raw data ingestion to model deployment, including:
 
