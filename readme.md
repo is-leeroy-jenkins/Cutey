@@ -57,13 +57,13 @@ jupyter notebook
 
 > Open `ipynb/balances.ipynb` and run cells top-to-bottom.
 
-### 🧠 Machine Learning in a Regulatory Environment
+## 🧠 Machine Learning in a Regulatory Environment
 
 - Forecast balances for **No-year, Multi-year, and Expiring Accounts**
 - Incorporate **Period of Availability (PoA)**, fiscal flags, and **transfer actions**
 - Embed OMB guidance into modeling features (e.g., apportionment limits, program activities)
 
-### 🧾 Integrated Federal Data Templates
+## 🧾 Integrated Federal Data Templates
 
 - **[SF-133](https://portal.max.gov/portal/document/SF133/Budget/FACTS%20II%20-%20SF%20133%20Report%20on%20Budget%20Execution%20and%20Budgetary%20Resources.html)**: Status of Budget Execution CSV import + reshaping
 - **[GTAS](https://fiscal.treasury.gov/gtas/)**: Trial balance integration for actuals by TAS
