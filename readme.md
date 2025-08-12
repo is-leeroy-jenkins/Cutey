@@ -116,9 +116,6 @@ This makes Balance Projector suitable for use by:
 - **Congressional Appropriation Staff**
 
 
-
-
-## 🧠 Model Benchmarking Framework
 Balance Projector implements and compares the following regression models:
 
 | Model                        | Module                              |
