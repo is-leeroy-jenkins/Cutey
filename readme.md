@@ -19,9 +19,18 @@ ___
 - **Feature Engineering Templates**: Add lag features, growth rates, fiscal flags (e.g., end-of-year), and obligation-to-appropriation ratios with reusable code blocks.
 - **Time-Aware Modeling Support**: While inherently tabular, Balance Projector supports datasets structured as rolling fiscal snapshots, making it viable for time series forecasting over fixed federal periods (e.g., P01–P12).
 
-## 🎯 Quickstart
+### 🧪 How to Run
 
-### Option A — Google Colab (no local setup)
+```bash
+git clone https://github.com/your-username/balance-projector.git
+cd balance-projector
+pip install -r requirements.txt
+jupyter notebook balances.ipynb
+```
+
+### 🎯 Quickstart
+
+#### Option A — Google Colab (no local setup)
 
 ```
 1. Click the **Open In Colab** badge above.
@@ -30,7 +39,7 @@ ___
 4. **Runtime → Run all**.
 ```
 
-### Option B — Local (conda or venv)
+#### Option B — Local (conda or venv)
 
 ```
 bash
@@ -48,20 +57,20 @@ jupyter notebook
 
 > Open `ipynb/balances.ipynb` and run cells top-to-bottom.
 
-## 🧠 Machine Learning in a Regulatory Environment
+### 🧠 Machine Learning in a Regulatory Environment
 
 - Forecast balances for **No-year, Multi-year, and Expiring Accounts**
 - Incorporate **Period of Availability (PoA)**, fiscal flags, and **transfer actions**
 - Embed OMB guidance into modeling features (e.g., apportionment limits, program activities)
 
-## 🧾 Integrated Federal Data Templates
+### 🧾 Integrated Federal Data Templates
 
 - **[SF-133](https://portal.max.gov/portal/document/SF133/Budget/FACTS%20II%20-%20SF%20133%20Report%20on%20Budget%20Execution%20and%20Budgetary%20Resources.html)**: Status of Budget Execution CSV import + reshaping
 - **[GTAS](https://fiscal.treasury.gov/gtas/)**: Trial balance integration for actuals by TAS
 - **[Agency Apportionments](https://openomb.org/)**: XML or CSV-based loader
 - **[Data.gov](https://data.gov/)**: USAspending, object class, and program activity support
 
-## 📦 Fine-tuning Datasets
+### 📦 Fine-tuning Datasets
 
 - [Appropriations](https://huggingface.co/datasets/leeroy-jankins/Appropriations) - Enacted appropriations from 1996-2024 available for fine-tuning learning models
 - [Regulations](https://huggingface.co/datasets/leeroy-jankins/Regulations/tree/main) - Collection of federal regulations on the use of appropriatied funds
@@ -76,7 +85,7 @@ jupyter notebook
 
 
 
-## 🧮 Multi-Model Performance Comparison
+### 🧮 Multi-Model Performance Comparison
 
 Models are evaluated using a consistent schema with a visual and tabular dashboard for:
 
@@ -87,7 +96,7 @@ Models are evaluated using a consistent schema with a visual and tabular dashboa
 Future enhancements will support model confidence intervals and budget violation detection.
 
 
-## ✅ Regression Models
+### ✅ Regression Models
 
 | Model                        | Module                                   |
 |-----------------------------|------------------------------------------|
@@ -101,22 +110,22 @@ Future enhancements will support model confidence intervals and budget violation
 
 
 
-## 🧠 Regulatory Context-Aware Modeling
+### 🧠 Regulatory Context-Aware Modeling
 
-The models are aligned with federal fiscal law and budget practice, allowing for:
+#### The models are aligned with federal fiscal law and budget practice, allowing for:
 
 - Modeling **Expired vs. Unexpired balances**
 - Use of **Period of Availability** to segment funding windows
 - Tracking **Obligational Authority**, **Reapportioned Amounts**, and **Transfer-In/Transfer-Out**
 
-This makes Balance Projector suitable for use by:
+#### This makes Balance Projector suitable for use by:
 
 - **Agency Budget Formulation Teams**
 - **OIG Auditors**
 - **Congressional Appropriation Staff**
 
 
-Balance Projector implements and compares the following regression models:
+#### Balance Projector implements and compares the following regression models:
 
 | Model                        | Module                              |
 |-----------------------------|--------------------------------------|
@@ -124,10 +133,10 @@ Balance Projector implements and compares the following regression models:
 | Random Forest Regressor     | `sklearn.ensemble.RandomForestRegressor` |
 | Gradient Boosting Regressor | `sklearn.ensemble.GradientBoostingRegressor` |
 
-Each model is trained using unified logic for fair and comparable evaluation across time series-structured or tabular datasets.
+#### Each model is trained using unified logic for fair and comparable evaluation across time series-structured or tabular datasets.
 
 
-## 🧪 Feature Engineering
+### 🧪 Feature Engineering
 
 - **Lag Variables**: Capture temporal dependencies in obligations/outlays
 - **Growth Rates**: Quarter-over-quarter and year-over-year trends
@@ -136,13 +145,13 @@ Each model is trained using unified logic for fair and comparable evaluation acr
 - **Log and Power Transforms**: Handle skew and nonlinear exposure
 
 
-## 📈 Visual & Quantitative Evaluation
+### 📈 Visual & Quantitative Evaluation
 - Line plots of forecasted vs. actual balances per TAS
 - Residual scatterplots + histograms
 - Error bars across time segments
 - Comparative bar charts for MAE, MSE, RMSE
 
-## 📏 Metrics
+### 📏 Metrics
 - **R²**: Variance explained
 - **MAE**: Absolute error
 - **MSE / RMSE**: Penalize large residuals
@@ -151,7 +160,7 @@ Each model is trained using unified logic for fair and comparable evaluation acr
 
 
 
-## 🏛️ Use Cases in Government
+### 🏛️ Use Cases in Government
 
 - **OMB Reporting**: Model PoA burn rates, EOY projections
 - **IG/OIG**: Track abnormal obligation behaviors
@@ -160,7 +169,7 @@ Each model is trained using unified logic for fair and comparable evaluation acr
 
 
 
-## 📊 Forecasting Federal Account Balances
+### 📊 Forecasting Federal Account Balances
 
 Balance Projector is purpose-built to support the **federal appropriations community** by forecasting balances in Treasury accounts based on data from:
 
@@ -172,7 +181,7 @@ Balance Projector is purpose-built to support the **federal appropriations commu
   - USAspending
   - Budget Object Class and Program Activity by Treasury Account
 
-## 📦 What This Means in Practice
+### 📦 What This Means in Practice
 
 - The notebook is pre-structured to ingest **SF-133 extracts** in tabular CSV format. Key fields include:
   - `Treasury Account Symbol (TAS)`
@@ -196,7 +205,7 @@ Balance Projector is purpose-built to support the **federal appropriations commu
 - **Inspectors General or Auditors** analyzing obligation trends
 
 
-## 📊 Comprehensive Evaluation Metrics
+### 📊 Comprehensive Evaluation Metrics
 - **R² Score** – Measures variance explained
 - **Mean Absolute Error (MAE)** – Average prediction error
 - **Mean Squared Error (MSE)** – Penalizes larger errors
@@ -205,28 +214,28 @@ Balance Projector is purpose-built to support the **federal appropriations commu
 
 
 
-## 📁 Flexible Dataset Input
+### 📁 Flexible Dataset Input
 - Accepts both default examples and custom CSVs
 - Auto-preprocessing compatible with `pandas`
 - Structured to allow easy injection of Treasury Account Symbols or SF-133 data
 
 
 
-## 📈 Visual Analytics
+### 📈 Visual Analytics
 - Side-by-side actual vs. predicted plots
 - Residual scatter charts
 - Metric bar plots across models
 
 
 
-## 🧰 Modular and Extensible
+### 🧰 Modular and Extensible
 - Add regressors in less than 10 lines of code
 - Separate training, prediction, and evaluation logic
 - Easy to integrate with other government financial models
 
 
 
-## 📦 Dependencies
+### 📦 Dependencies
 
 | Package          | Description                                                      | Link                                                  |
 |------------------|------------------------------------------------------------------|-------------------------------------------------------|
@@ -255,18 +264,7 @@ Balance Projector is purpose-built to support the **federal appropriations commu
 
 
 
-## 🧪 How to Run
-
-```bash
-git clone https://github.com/your-username/balance-projector.git
-cd balance-projector
-pip install -r requirements.txt
-jupyter notebook balances.ipynb
-```
-
-
-
-## 📁 Customize Dataset
+### 📁 Customize Dataset
 
 Replace dataset ingestion cell with:
 
@@ -279,7 +277,7 @@ y = df["target_column"]
 
 
 
-### 📊 Outputs
+#### 📊 Outputs
 
 - R², MAE, MSE for each model
 - Bar plots of performance scores
@@ -288,7 +286,7 @@ y = df["target_column"]
 
 
 
-## 🔮 Roadmap
+### 🔮 Roadmap
 
 - [ ] Add time series models (Prophet, ARIMA)
 - [ ] Integrate GridSearchCV for model tuning
@@ -298,7 +296,7 @@ y = df["target_column"]
 
 
 
-## 🤝 Contributing
+### 🤝 Contributing
 
 1. 🍴 Fork the project
 2. 🔧 Create a branch: `git checkout -b feat/new-feature`
@@ -308,13 +306,8 @@ y = df["target_column"]
 > **Disclaimer**: This is for analytical exploration, research, and education purposes.  
 > This is **not** an official government product; validate against authoritative sources before use.
 
-## 📝 License
+### 📝 License
 
-Cutey is published under the [MIT General Public License v3](https://github.com/is-leeroy-jenkins/Cutey/blob/main/LICENSE.txt).
+- Cutey is published under the [MIT General Public License v3](https://github.com/is-leeroy-jenkins/Cutey/blob/main/LICENSE.txt).
 
 
----
-
-## 👨‍💻 Author
-
-> “All models are wrong, but some are useful.” — George E. P. Box
