@@ -332,14 +332,8 @@ y = df["target_column"]
 
 
 
-## 🤝 Contributing
 
-1. 🍴 Fork the project
-2. 🔧 Create a branch: `git checkout -b feat/new-feature`
-3. ✅ Commit and push changes
-4. 📬 Submit a pull request
-
-> **Disclaimer**: This is for analytical exploration, research, and education purposes.  
+> **Disclaimer**: This is for analytical exploration and research purposes.  
 > This is **not** an official government product; validate against authoritative sources before use.
 
 ## 📝 License
