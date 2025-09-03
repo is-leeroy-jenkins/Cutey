@@ -199,6 +199,42 @@ Balance Projector is purpose-built to support the **federal appropriations commu
   - Fiscal year close-out positions
   - Anticipated outlays or expenditure curves
 
+
+
+
+## 📊 Descriptive Statistics
+
+| Statistic         | Description                             | Use in Budget Analysis                                               |
+|------------------|-----------------------------------------|----------------------------------------------------------------------|
+| **Mean**         | Average value                           | Avg. Outlays, Obligations, etc., across accounts                |
+| **Median**       | Middle value                            | Robust central tendency in skewed financial data                    |
+| **Mode**         | Most frequent value                     | Identify common MainAccountCodes or Availability categories     |
+| **Standard Deviation** | Spread around the mean                | Indicates variability in execution rates or balances                |
+| **Variance**     | Square of standard deviation            | Used in statistical tests and model diagnostics                     |
+| **Range**        | Difference between max and min          | Measures total spread of financial metrics                          |
+| **Interquartile Range (IQR)** | Spread of middle 50% of data           | Identifies budget outliers and extreme accounts                     |
+| **Skewness**     | Asymmetry of distribution               | Skewed obligations suggest few accounts dominate totals             |
+| **Kurtosis**     | "Peakedness" of distribution            | High values indicate outlier-prone financial data                   |
+
+
+
+
+
+## 🔍 Inferrential Statistics
+
+
+| Metric           | Description                                            | Use in Budget Analysis                                               |
+|-------------------------|--------------------------------------------------------|----------------------------------------------------------------------|
+| **Pearson Correlation** | Linear relationship between variables                  | E.g., TotalResources vs. Obligations                                 |
+| **Spearman Correlation**| Monotonic (rank-based) relationship                    | More robust to non-linear trends in financial execution              |
+| **t-test**              | Compare means between 2 groups                         | Discretionary vs. Mandatory accounts' execution rates                |
+| **ANOVA**               | Compare means across multiple groups                   | Obligations across availability periods or account types             |
+| **Chi-square Test**     | Categorical independence                               | Are Main Account Codes related to availability or a specific agency? |
+| **Confidence Intervals**| Estimate range of a population mean                    | Upper and lower bound expected obligations or recoveries             |
+| **Regression Coefficients (p-values)** | Test variable significance                             | Are Recoveries a significant predictor of UnobligatedBalance?        |
+| **F-statistic (overall regression)**   | Test whole model fit                                   | Determines the combined influence of all predictors                  |
+| **Z-score / Outlier Tests** | Deviation from standard mean                           | Identify abnormal balances or lapse rates                            |
+| **Boxplots**            | Visual outlier detection                               | Discover obligation anomalies within agencies                        |
 #### This makes the Balance Projector highly useful for:
 - **Accountants and Budget Officers** projecting funding needs or lapsing balances
 - **OMB/Agency Analysts** building models for apportionments or reprogrammings
