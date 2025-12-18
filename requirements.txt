@@ -20,6 +20,7 @@ soundfile
 sounddevice
 sentence-transformers
 statsmodels
+streamlit
 torch
 tensorflow
 typing
