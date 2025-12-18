@@ -585,12 +585,8 @@ def forecast_time_series( ts: pd.Series, steps: int, arima_order: Tuple[ int, in
 
 st.set_page_config( page_title='Cutey-Py', layout='wide' )
 
-st.title( 'Account Balance Projections' )
-st.caption(
-	'Analyze SF-133/GTAS data, distributions, ANOVA, correlations, PCA, clustering, regressions, and time-series forecasts.'
-)
-
-with st.expander( "What this app expects", expanded=False ):
+st.title( 'Balance Projection' )
+with st.expander( "Account-A Data", expanded=False ):
 	st.markdown(
 		"""
 - Upload a **CSV** or **Excel** file containing account/budget balance fields.
@@ -832,7 +828,7 @@ with tabs[ 6 ]:
 		if feature_cols and target_col:
 			try:
 				results_df, pred_df, fitted = run_regressions( df=df, feature_cols=feature_cols,
-					target_col=target_col, test_size=float( test_size ), andom_state=int( random_state ),
+					target_col=target_col, test_size=float( test_size ), random_state=int( random_state ),
 					use_poly=bool( use_poly ), poly_degree=int( poly_degree ), )
 				
 				st.markdown( '#### Model Metrics (sorted by R²)' )
