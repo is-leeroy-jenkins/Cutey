@@ -19,7 +19,7 @@ ___
 - **Feature Engineering Templates**: Add lag features, growth rates, fiscal flags (e.g., end-of-year), and obligation-to-appropriation ratios with reusable code blocks.
 - **Time-Aware Modeling Support**: While inherently tabular, Balance Projector supports datasets structured as rolling fiscal snapshots, making it viable for time series forecasting over fixed federal periods (e.g., P01–P12).
 
-## 🧪 How to Run
+## 🧪 How to Install
 
 ```bash
 git clone https://github.com/your-username/balance-projector.git
@@ -28,7 +28,7 @@ pip install -r requirements.txt
 jupyter notebook balances.ipynb
 ```
 
-## 🎯 Quickstart
+## 🎯 Quickstart ( Google Colab )
 
 #### Option A — Google Colab (no local setup)
 
@@ -56,6 +56,116 @@ jupyter notebook
 ```
 
 > Open `ipynb/balances.ipynb` and run cells top-to-bottom.
+
+
+## 🚀 Quickstart ( Streamlit )
+
+This application is a Streamlit-based web interface for the **Cutey / Balance Projector**
+analytics workflow. The steps below walk an end-user through cloning the repository,
+installing dependencies, and running the app locally.
+
+---
+
+### 1️⃣ Clone the Repository
+
+First, clone the GitHub repository to your local machine:
+
+    git clone https://github.com/<your-username>/<your-repo-name>.git
+    cd <your-repo-name>
+
+Replace `<your-username>` and `<your-repo-name>` with the actual GitHub path.
+
+---
+
+### 2️⃣ Create and Activate a Virtual Environment (Recommended)
+
+Using a virtual environment is strongly recommended to avoid dependency conflicts.
+
+**Windows (PowerShell):**
+
+    python -m venv .venv
+    .\.venv\Scripts\Activate.ps1
+
+**macOS / Linux:**
+
+    python3 -m venv .venv
+    source .venv/bin/activate
+
+Once activated, your shell prompt should indicate the virtual environment is in use.
+
+---
+
+### 3️⃣ Install Dependencies
+
+Install the required Python packages using `pip`:
+
+    pip install --upgrade pip
+    pip install -r requirements.txt
+
+If a `requirements.txt` file is not provided, the minimum required packages are:
+
+- `streamlit`
+- `pandas`
+- `numpy`
+- `matplotlib`
+- `scikit-learn`
+- `scipy`
+- `statsmodels` (required for time-series forecasting features)
+
+You can install them directly with:
+
+    pip install streamlit pandas numpy matplotlib scikit-learn scipy statsmodels
+
+---
+
+### 4️⃣ Run the Streamlit App
+
+From the root of the repository (where `app.py` is located), run:
+
+    streamlit run app.py
+
+Streamlit will start a local development server and automatically open the app
+in your default web browser. If it does not open automatically, look for a URL
+similar to:
+
+    http://localhost:8501
+
+and open it manually.
+
+---
+
+### 5️⃣ Using the Application
+
+1. Upload a **CSV** or **Excel (.xlsx / .xls)** file containing balance or budget data.
+2. Navigate through the tabs to explore:
+   - Data preview and descriptive statistics
+   - Distributions and normality checks
+   - PCA and clustering
+   - Correlation analysis
+   - Regression model comparisons
+   - Time-series aggregation and forecasting
+3. Download processed data from the **Export** tab if needed.
+
+---
+
+### 6️⃣ Stopping the App
+
+To stop the application, return to the terminal where Streamlit is running and press:
+
+    Ctrl + C
+
+This will shut down the local Streamlit server safely.
+
+---
+
+### Notes
+
+- The app runs entirely **locally**; no data is uploaded to external services.
+- For best results, use datasets with clearly defined numeric balance fields and
+  a period or fiscal-year column for time-series analysis.
+- The time-series tab requires `statsmodels`; if it is not installed, those
+  features will be disabled automatically.
+
 
 ## 🧠 Machine Learning in a Regulatory Environment
 
