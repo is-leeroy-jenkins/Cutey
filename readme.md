@@ -28,9 +28,12 @@ pip install -r requirements.txt
 jupyter notebook balances.ipynb
 ```
 
-## 🎯 Quickstart ( Google Colab )
+## 🎯 Quickstart ( Colab )
 
 #### Option A — Google Colab (no local setup)
+
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/is-leeroy-jenkins/Cutey/blob/main/balances.ipynb)
 
 ```
 1. Click the **Open In Colab** badge above.
