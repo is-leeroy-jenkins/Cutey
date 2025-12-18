@@ -583,13 +583,11 @@ def forecast_time_series( ts: pd.Series, steps: int, arima_order: Tuple[ int, in
 # Streamlit UI
 # -------------------------------------------------------------------------------------------------
 
-st.set_page_config( page_title='Cutey-Py)', layout='wide' )
+st.set_page_config( page_title='Cutey-Py', layout='wide' )
 
-st.title( 'Federal Balance Projectors' )
+st.title( 'Account Balance Projections' )
 st.caption(
-	'A Streamlit adaptation of the balances notebook: load SF-133/GTAS-like balance data, explore '
-	'distributions, correlations, PCA/clustering, regression comparisons, and time-series '
-	'forecasts.'
+	'Analyze SF-133/GTAS data, distributions, ANOVA, correlations, PCA, clustering, regressions, and time-series forecasts.'
 )
 
 with st.expander( "What this app expects", expanded=False ):
@@ -632,15 +630,15 @@ st.sidebar.success( f'Loaded: {df.shape[ 0 ]:,} rows × {df.shape[ 1 ]:,} column
 
 tabs = st.tabs(
 	[
-			'Data',
-			'Descriptive Stats',
-			'Distributions',
-			'Transforms',
-			'PCA + Clustering',
-			'Correlations',
-			'Regression',
-			'Time Series',
-			'Export',
+		'Data',
+		'Descriptive Stats',
+		'Distributions',
+		'Transforms',
+		'PCA + Clustering',
+		'Correlations',
+		'Regression',
+		'Time Series',
+		'Export',
 	]
 )
 
@@ -648,14 +646,14 @@ tabs = st.tabs(
 # Data tab
 # -----------------------
 with tabs[ 0 ]:
-	st.subheader( "Data Preview" )
+	st.subheader( 'Data Preview' )
 	st.dataframe( df, use_container_width=True, height=420 )
 	
-	st.subheader( "Column Types" )
+	st.subheader( 'Column Types' )
 	df_types = pd.DataFrame(
 		{
-				"Column": df.columns,
-				"DType": [ str( t ) for t in df.dtypes ] }
+				'Column': df.columns,
+				'DType': [ str( t ) for t in df.dtypes ] }
 	)
 	st.dataframe( df_types, use_container_width=True, height=320 )
 
