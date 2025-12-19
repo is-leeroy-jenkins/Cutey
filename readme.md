@@ -64,7 +64,7 @@ This application is a Streamlit-based web interface for the **Cutey / Balance Pr
 analytics workflow. The steps below walk an end-user through cloning the repository,
 installing dependencies, and running the app locally.
 
----
+![](https://github.com/is-leeroy-jenkins/Cutey/blob/main/resources/assets/Cutey-Py.gif)
 
 ### 1️⃣ Clone the Repository
 
