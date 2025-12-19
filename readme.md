@@ -29,6 +29,8 @@ jupyter notebook balances.ipynb
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/is-leeroy-jenkins/Cutey/blob/main/balances.ipynb)
 
+![](https://github.com/is-leeroy-jenkins/Cutey/blob/main/resources/assets/Cutey-nb.gif)
+
 #### Option A — Google Colab (no local setup)
 
 
