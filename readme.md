@@ -27,10 +27,10 @@ jupyter notebook balances.ipynb
 
 ## 🎯 Quickstart ( Colab )
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/is-leeroy-jenkins/Cutey/blob/main/balances.ipynb)
+
 #### Option A — Google Colab (no local setup)
 
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/is-leeroy-jenkins/Cutey/blob/main/balances.ipynb)
 
 ```
 1. Click the **Open In Colab** badge above.
@@ -60,11 +60,11 @@ jupyter notebook
 
 ## 🚀 Quickstart ( Streamlit )
 
+![](https://github.com/is-leeroy-jenkins/Cutey/blob/main/resources/assets/Cutey-Py.gif)
+
 This application is a Streamlit-based web interface for the **Cutey / Balance Projector**
 analytics workflow. The steps below walk an end-user through cloning the repository,
 installing dependencies, and running the app locally.
-
-![](https://github.com/is-leeroy-jenkins/Cutey/blob/main/resources/assets/Cutey-Py.gif)
 
 ### 1️⃣ Clone the Repository
 
