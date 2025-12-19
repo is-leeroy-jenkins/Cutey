@@ -583,7 +583,7 @@ def forecast_time_series( ts: pd.Series, steps: int, arima_order: Tuple[ int, in
 # Streamlit UI
 # -------------------------------------------------------------------------------------------------
 
-st.set_page_config( page_title='Cutey-Py', layout='wide', page_icon=r'resources/favicon.ico' )
+st.set_page_config( page_title='Cutey-Py', layout='wide', page_icon=r'resources/assets/favicon.ico' )
 
 st.title( 'Balance Projection' )
 with st.expander( "Account-A Data", expanded=False ):
