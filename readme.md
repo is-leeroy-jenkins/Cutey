@@ -62,6 +62,8 @@ jupyter notebook
 
 ## 🚀 Quickstart ( Streamlit )
 
+[![Streamlit App](https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white)](https://cutey-py.streamlit.app/)
+
 ![](https://github.com/is-leeroy-jenkins/Cutey/blob/main/resources/assets/Cutey-Py.gif)
 
 This application is a Streamlit-based web interface for the **Cutey / Balance Projector**
