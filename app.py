@@ -192,12 +192,12 @@ if dup_count > 0:
 tabs = st.tabs([
     "Data",
     "Descriptive Stats",
+    "Inferential Stats",
     "Distributions",
     "Transforms",
     "PCA + Clustering",
     "Correlations",
     "Regression",
-    "Inferential Stats",
     "Time Series",
     "Export",
 ])
@@ -370,7 +370,7 @@ with tabs[2]:
                     edgecolor="black",
                     linewidth=0.5,
                 )
-            ax.set_title("Overlaid Histograms (alpha + edges)")
+            ax.set_title("Histograms (alpha + edges)")
             ax.legend(ncol=3, fontsize=8)
             st.pyplot(fig)
 
