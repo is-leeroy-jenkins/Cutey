@@ -1,956 +1,651 @@
-'''
-******************************************************************************************
-  Assembly:                Cutey (Streamlit)
-  Filename:                app.py
-  Author:                  Terry D. Eppler 
-  Created:                 12-17-2025
-
-  Last Modified By:        ChatGPT
-  Last Modified On:        12-17-2025
-******************************************************************************************
-  <copyright file="app.py" company="Terry D. Eppler">
-
-	     app.py
-	     Copyright ©  2022  Terry Eppler
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the “Software”),
-     to deal in the Software without restriction,
-     including without limitation the rights to use,
-     copy, modify, merge, publish, distribute, sublicense,
-     and/or sell copies of the Software,
-     and to permit persons to whom the Software is furnished to do so,
-     subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in all
-     copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-     INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
-     IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-     DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-     ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-     DEALINGS IN THE SOFTWARE.
-
-     You can contact me at:  terryeppler@gmail.com or eppler.terry@epa.gov
-
-  </copyright>
-  <summary>
-    app.py
-  </summary>
-******************************************************************************************
-'''
 from __future__ import annotations
 
+# -------------------------------------------------------------------------------------------------
+# Standard library
+# -------------------------------------------------------------------------------------------------
 import io
-import math
-from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from pathlib import Path
+from typing import Optional, List, Dict
 
+# -------------------------------------------------------------------------------------------------
+# Third-party
+# -------------------------------------------------------------------------------------------------
 import numpy as np
 import pandas as pd
 import streamlit as st
-
 import matplotlib.pyplot as plt
 
 from scipy import stats
 
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
-from sklearn.linear_model import BayesianRidge, Lasso, LinearRegression, Ridge
+from sklearn.linear_model import (
+    LinearRegression,
+    Ridge,
+    Lasso,
+    BayesianRidge,
+    ElasticNet,
+    HuberRegressor,
+    SGDRegressor,
+)
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import MinMaxScaler, PolynomialFeatures, StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 try:
-	# Optional, but recommended for the time-series tab
-	from statsmodels.tsa.arima.model import ARIMA
-	from statsmodels.tsa.holtwinters import ExponentialSmoothing
-	
-	_HAS_STATSMODELS = True
+    from statsmodels.tsa.arima.model import ARIMA
+    from statsmodels.tsa.holtwinters import ExponentialSmoothing
+    HAS_STATSMODELS = True
 except Exception:
-	_HAS_STATSMODELS = False
+    HAS_STATSMODELS = False
+
 
 # -------------------------------------------------------------------------------------------------
-# Guard / helpers
+# Streamlit config
 # -------------------------------------------------------------------------------------------------
+st.set_page_config(page_title="Balance Projection (Cutey)", layout="wide")
+st.title("Balance Projection")
 
-def throw_if( name: str, value: object ) -> None:
-	"""
-		
-		Purpose:
-		--------
-		Simple guard that raises ValueError if `value` is falsy.
-	
-		Parameters:
-		-----------
-		name (str): Variable name used in error message.
-		value (object): Value to validate.
-	
-		Returns:
-		--------
-		None
-		
-	"""
-	if value is None:
-		raise ValueError( f'Argument "{name}" cannot be null.' )
-	if isinstance( value, str ) and not value.strip( ):
-		raise ValueError( f'Argument "{name}" cannot be empty.' )
-
-def _coerce_numeric( df: pd.DataFrame, cols: List[ str ] ) -> pd.DataFrame:
-	"""
-		
-		Purpose:
-		--------
-		Convert selected columns to numeric safely.
-	
-		Parameters:
-		-----------
-		df (pd.DataFrame): Input dataframe.
-		cols (List[str]): Column names to coerce.
-	
-		Returns:
-		--------
-		pd.DataFrame: Copy with coerced numeric columns.
-		
-	"""
-	df_out = df.copy( )
-	for c in cols:
-		df_out[ c ] = pd.to_numeric( df_out[ c ], errors="coerce" )
-	return df_out
-
-def _numeric_columns( df: pd.DataFrame ) -> List[ str ]:
-	"""
-	
-		Purpose:
-		--------
-		Identify numeric columns (including coercible columns with some numeric values).
-	
-		Parameters:
-		-----------
-		df (pd.DataFrame): Input dataframe.
-	
-		Returns:
-		--------
-		List[str]: Candidate numeric columns.
-		
-	"""
-	numeric_cols = list( df.select_dtypes( include=[ np.number ] ).columns )
-	if numeric_cols:
-		return numeric_cols
-	
-	# Fallback: attempt coercion-based detection
-	candidates: List[ str ] = [ ]
-	for c in df.columns:
-		s = pd.to_numeric( df[ c ], errors="coerce" )
-		if s.notna( ).mean( ) >= 0.6:
-			candidates.append( c )
-	return candidates
-
-def _safe_fig( ) -> plt.Figure:
-	"""
-		
-		Purpose:
-		--------
-		Create a single matplotlib figure with standard sizing.
-	
-		Returns:
-		--------
-		matplotlib.figure.Figure
-		
-	"""
-	fig = plt.figure( figsize=(10, 5) )
-	return fig
-
-@dataclass
-class RegressionResult:
-	model: str
-	mse: float
-	r2: float
 
 # -------------------------------------------------------------------------------------------------
-# Data loading
+# Constants
 # -------------------------------------------------------------------------------------------------
+FALLBACK_DATA_PATH = Path("data") / "Account Balances.xlsx"
 
-@st.cache_data( show_spinner=False )
-def load_table_from_upload( uploaded: io.BytesIO, filename: str, sheet_name: Optional[ str ]=None) -> pd.DataFrame:
-	"""
-	
-		Purpose:
-		--------
-		Load an uploaded CSV or Excel file into a DataFrame.
-	
-		Parameters:
-		-----------
-		uploaded (io.BytesIO): Uploaded file bytes.
-		filename (str): Original filename.
-		sheet_name (Optional[str]): Excel sheet to load.
-	
-		Returns:
-		--------
-		pd.DataFrame
-	
-	"""
-	throw_if( 'uploaded', uploaded )
-	throw_if( 'filename', filename )
-	name = filename.lower( )
-	if name.endswith( '.csv' ):
-		return pd.read_csv( uploaded )
-	
-	if name.endswith( '.xlsx' ) or name.endswith( '.xls' ):
-		if sheet_name:
-			return pd.read_excel( uploaded, sheet_name=sheet_name )
-		return pd.read_excel( uploaded )
-	
-	raise ValueError( 'Unsupported file type. Please upload .csv, .xlsx, or .xls.' )
+# A consistent palette/marker/linestyle cycle (Pogi-like clarity)
+PALETTE = [
+    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
+    "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
+    "#bcbd22", "#17becf",
+]
+MARKERS = ["o", "s", "^", "D", "v", "P", "X", "*", "<", ">"]
+LINESTYLES = ["-", "--", "-.", ":", (0, (3, 1, 1, 1)), (0, (5, 1))]
 
-def _list_excel_sheets( uploaded: io.BytesIO ) -> List[ str ]:
-	"""
-	
-		Purpose:
-		--------
-		Get Excel sheet names.
-	
-		Parameters:
-		-----------
-		uploaded (io.BytesIO): Uploaded file bytes.
-	
-		Returns:
-		--------
-		List[str]
-	
-	"""
-	try:
-		xls = pd.ExcelFile( uploaded )
-		return list( xls.sheet_names )
-	except Exception:
-		return [ ]
 
 # -------------------------------------------------------------------------------------------------
-# Analytics / plots
+# Helpers (robust to duplicate headers)
 # -------------------------------------------------------------------------------------------------
+def numeric_columns(df: pd.DataFrame) -> List[str]:
+    """Return numeric columns; if none are typed numeric, infer coercible columns."""
+    cols = list(df.select_dtypes(include=[np.number]).columns)
+    if cols:
+        return cols
+    inferred: List[str] = []
+    for c in df.columns:
+        s = pd.to_numeric(df[c], errors="coerce")
+        if s.notna().mean() >= 0.6:
+            inferred.append(c)
+    return inferred
 
-def plot_histograms( df: pd.DataFrame, cols: List[ str ], bins: int = 30 ) -> None:
-	"""
-	
-		Purpose:
-		--------
-		Plot histograms for selected numeric columns.
-	
-		Parameters:
-		-----------
-		df (pd.DataFrame): Input data.
-		cols (List[str]): Columns to plot.
-		bins (int): Histogram bins.
-	
-		Returns:
-		--------
-		None
-	
-	"""
-	throw_if( 'df', df )
-	throw_if( 'cols', cols )
-	
-	for c in cols:
-		fig = _safe_fig( )
-		ax = fig.add_subplot( 111 )
-		s = pd.to_numeric( df[ c ], errors='coerce' ).dropna( )
-		ax.hist( s.values, bins=bins )
-		ax.set_title( f'Histogram: {c}' )
-		ax.set_xlabel( c )
-		ax.set_ylabel( 'Count' )
-		st.pyplot( fig )
 
-def plot_qq( df: pd.DataFrame, col: str ) -> None:
-	"""
-		
-		Purpose:
-		--------
-		Plot a Q-Q plot for normality assessment.
-	
-		Parameters:
-		-----------
-		df (pd.DataFrame): Input data.
-		col (str): Column to evaluate.
-	
-		Returns:
-		--------
-		None
-		
-	"""
-	throw_if( 'df', df )
-	throw_if( 'col', col )
-	
-	s = pd.to_numeric( df[ col ], errors='coerce' ).dropna( )
-	if s.empty:
-		st.warning( f'No numeric data available for "{col}". ' )
-		return
-	
-	fig = _safe_fig( )
-	ax = fig.add_subplot( 111 )
-	stats.probplot( s.values, dist='norm', plot=ax )
-	ax.set_title( f'Q-Q Plot (Normality): {col}' )
-	st.pyplot( fig )
+def new_fig(width: float = 10.0, height: float = 5.0) -> plt.Figure:
+    """Create a standard matplotlib figure."""
+    return plt.figure(figsize=(width, height))
 
-def compute_correlations( df: pd.DataFrame, cols: List[ str ], method: str ) -> pd.DataFrame:
-	"""
-		
-		Purpose:
-		--------
-		Compute correlations for selected columns.
-	
-		Parameters:
-		-----------
-		df (pd.DataFrame): Input data.
-		cols (List[str]): Numeric columns.
-		method (str): 'pearson', 'spearman', or 'kendall'.
-	
-		Returns:
-		--------
-		pd.DataFrame
-		
-	"""
-	throw_if( 'df', df )
-	throw_if( 'cols', cols )
-	throw_if( 'method', method )
-	df_num = _coerce_numeric( df[ cols ], cols )
-	return df_num.corr( method=method )
 
-def run_regressions(df: pd.DataFrame,feature_cols: List[ str ], target_col: str, test_size: float, 
-		random_state: int, use_poly: bool, poly_degree: int ) -> Tuple[ pd.DataFrame, pd.DataFrame, Dict[ str, object ] ]:
-	"""
-	
-		Purpose:
-		--------
-		Train and evaluate a set of regressors similar to the notebook section.
-	
-		Parameters:
-		-----------
-		df (pd.DataFrame): Data.
-		feature_cols (List[str]): Predictors.
-		target_col (str): Target variable.
-		test_size (float): Test fraction.
-		random_state (int): RNG seed.
-		use_poly (bool): Include polynomial regression model.
-		poly_degree (int): Polynomial degree for polynomial regression.
-	
-		Returns:
-		--------
-		Tuple[pd.DataFrame, pd.DataFrame, Dict[str, object]]:
-			(results_df, predictions_df, fitted_models)
-			
-	"""
-	throw_if( 'df', df )
-	throw_if( 'feature_cols', feature_cols )
-	throw_if( 'target_col', target_col )
-	
-	df_work = df.copy( )
-	df_work = _coerce_numeric( df_work, feature_cols + [ target_col ] )
-	df_work = df_work.dropna( subset=feature_cols + [ target_col ] )
-	
-	X = df_work[ feature_cols ]
-	y = df_work[ target_col ]
-	
-	if len( df_work ) < 20:
-		raise ValueError( 'Not enough complete rows (>= 20) after numeric coercion and NA '
-		                  'filtering.' )
-	
-	X_train, X_test, y_train, y_test = train_test_split(
-		X, y, test_size=test_size, random_state=random_state
-	)
-	
-	models: Dict[ str, object ] = \
-	{
-		'Linear Regression': LinearRegression( ),
-		'Ridge Regression': Ridge( alpha=10.0, random_state=random_state ),
-		'Lasso Regression': Lasso( alpha=10.0, max_iter=10000, random_state=random_state ),
-		'Bayesian Ridge Regression': BayesianRidge( ),
-	}
-	
-	if use_poly:
-		models[ f'Polynomial Regression (Degree={poly_degree})' ] = make_pipeline(
-			PolynomialFeatures( poly_degree ),
-			LinearRegression( )
-		)
-	
-	results: List[ RegressionResult ] = [ ]
-	preds_table: Dict[ str, np.ndarray ] = { }
-	
-	fitted_models: Dict[ str, object ] = { }
-	
-	for name, mdl in models.items( ):
-		mdl.fit( X_train, y_train )
-		y_pred = mdl.predict( X_test )
-		
-		mse = float( mean_squared_error( y_test, y_pred ) )
-		r2 = float( r2_score( y_test, y_pred ) )
-		
-		results.append( RegressionResult( model=name, mse=mse, r2=r2 ) )
-		preds_table[ name ] = y_pred
-		fitted_models[ name ] = mdl
-	
-	results_df = pd.DataFrame( [ r.__dict__ for r in
-	                             results ] ).sort_values( 'r2', ascending=False )
-	results_df = results_df.rename( columns={
-			'model': 'Model',
-			'mse': 'MSE',
-			'r2': 'R2 Score' } ).round( 4 )
-	
-	pred_df = pd.DataFrame( {
-			'Actual': y_test.values } )
-	for k, v in preds_table.items( ):
-		pred_df[ k ] = v
-	pred_df = pred_df.reset_index( drop=True )
-	
-	return results_df, pred_df, fitted_models
+def series_from_column(df: pd.DataFrame, col_name: str) -> pd.Series:
+    """
+    Return a 1-D Series from a column name, even if duplicate headers exist.
+    If df[col_name] is a DataFrame (duplicate headers), take the first.
+    """
+    col = df[col_name]
+    if isinstance(col, pd.DataFrame):
+        return col.iloc[:, 0]
+    return col
 
-def plot_actual_vs_pred( y_true: np.ndarray, y_pred: np.ndarray, title: str ) -> None:
-	"""
-	
-		Purpose:
-		--------
-		Scatter plot of actual vs predicted.
-	
-		Parameters:
-		-----------
-		y_true (np.ndarray): Actual values.
-		y_pred (np.ndarray): Predicted values.
-		title (str): Chart title.
-	
-		Returns:
-		--------
-		None
-		
-	"""
-	fig = _safe_fig( )
-	ax = fig.add_subplot( 111 )
-	ax.scatter( y_true, y_pred )
-	ax.set_title( title )
-	ax.set_xlabel( 'Actual' )
-	ax.set_ylabel( 'Predicted' )
-	
-	# 45-degree reference line
-	lo = float( np.nanmin( [ np.nanmin( y_true ), np.nanmin( y_pred ) ] ) )
-	hi = float( np.nanmax( [ np.nanmax( y_true ), np.nanmax( y_pred ) ] ) )
-	ax.plot( [ lo,
-	           hi ], [ lo,
-	                   hi ] )
-	st.pyplot( fig )
 
-def plot_residuals( y_true: np.ndarray, y_pred: np.ndarray, title: str ) -> None:
-	"""
-		
-		Purpose:
-		--------
-		Residual plot: predicted vs residual.
-	
-		Parameters:
-		-----------
-		y_true (np.ndarray): Actual values.
-		y_pred (np.ndarray): Predicted values.
-		title (str): Chart title.
-	
-		Returns:
-		--------
-		None
-		
-	"""
-	residuals = y_true - y_pred
-	fig = _safe_fig( )
-	ax = fig.add_subplot( 111 )
-	ax.scatter( y_pred, residuals )
-	ax.axhline( 0.0 )
-	ax.set_title( title )
-	ax.set_xlabel( 'Predicted' )
-	ax.set_ylabel( 'Residual (Actual - Predicted)' )
-	st.pyplot( fig )
+def coerce_numeric(df: pd.DataFrame, cols: List[str]) -> pd.DataFrame:
+    """
+    Safely coerce selected columns to numeric; supports duplicate headers (DataFrame -> Series).
+    """
+    out = df.copy()
+    for c in cols:
+        if c not in out.columns:
+            continue
+        s = series_from_column(out, c)
+        out[c] = pd.to_numeric(s, errors="coerce")
+    return out
 
-def run_pca( df: pd.DataFrame, cols: List[ str ], n_components: int, scale: str ) -> Tuple[ pd.DataFrame, PCA ]:
-	"""
-		
-		Purpose:
-		--------
-		Run PCA on selected numeric columns.
-	
-		Parameters:
-		-----------
-		df (pd.DataFrame): Input data.
-		cols (List[str]): Numeric columns to include.
-		n_components (int): PCA components.
-		scale (str): 'none', 'standard', 'minmax'.
-	
-		Returns:
-		--------
-		Tuple[pd.DataFrame, PCA]: (components_df, pca_model)
-		
-	"""
-	throw_if( 'df', df )
-	throw_if( 'cols', cols )
-	df_num = _coerce_numeric( df[ cols ], cols ).dropna( )
-	if df_num.empty or len( df_num ) < 10:
-		raise ValueError( 'Not enough numeric rows for PCA (need >= 10).' )
-	
-	X = df_num.values
-	if scale == 'standard':
-		X = StandardScaler( ).fit_transform( X )
-	elif scale == 'minmax':
-		X = MinMaxScaler( ).fit_transform( X )
-	
-	pca = PCA( n_components=n_components, random_state=42 )
-	comps = pca.fit_transform( X )
-	comp_cols = [ f'PC{i + 1}' for i in range( comps.shape[ 1 ] ) ]
-	df_comps = pd.DataFrame( comps, columns=comp_cols )
-	return df_comps, pca
-
-def run_kmeans( df_features: pd.DataFrame, k: int ) -> np.ndarray:
-	"""
-	
-		Purpose:
-		--------
-		Run KMeans clustering.
-	
-		Parameters:
-		-----------
-		df_features (pd.DataFrame): Feature matrix.
-		k (int): Number of clusters.
-	
-		Returns:
-		--------
-		np.ndarray: Cluster labels.
-		
-	"""
-	throw_if( 'df_features', df_features )
-	if k < 2:
-		raise ValueError( 'k must be >= 2' )
-	
-	km = KMeans( n_clusters=k, n_init=10, random_state=42 )
-	return km.fit_predict( df_features.values )
-
-def forecast_time_series( ts: pd.Series, steps: int, arima_order: Tuple[ int, int, int ],
-		seasonal_period: Optional[ int ] ) -> Dict[ str, pd.Series ]:
-	"""
-		
-		Purpose:
-		--------
-		Forecast a univariate time series with ARIMA and Holt-Winters.
-	
-		Parameters:
-		-----------
-		ts (pd.Series): Time series indexed by year/period.
-		steps (int): Forecast horizon.
-		arima_order (Tuple[int,int,int]): (p,d,q).
-		seasonal_period (Optional[int]): If provided, Holt-Winters seasonal period.
-	
-		Returns:
-		--------
-		Dict[str, pd.Series]: forecasts by model name.
-		
-	"""
-	if not _HAS_STATSMODELS:
-		raise RuntimeError( 'statsmodels is not installed; cannot run time-series forecasting.' )
-	throw_if( 'ts', ts )
-	ts_clean = ts.dropna( )
-	if len( ts_clean ) < 8:
-		raise ValueError( 'Need at least 8 time points for forecasting.' )
-	
-	forecasts: Dict[ str, pd.Series ] = { }
-	
-	# ARIMA
-	arima = ARIMA( ts_clean, order=arima_order )
-	arima_fit = arima.fit( )
-	arima_fc = arima_fit.forecast( steps=steps )
-	forecasts[ 'ARIMA' ] = arima_fc
-	
-	# Holt-Winters (Exponential Smoothing)
-	if seasonal_period and seasonal_period >= 2:
-		hw = ExponentialSmoothing(ts_clean, trend='add', seasonal='add',
-			seasonal_periods=int( seasonal_period ) ).fit( )
-	else:
-		hw = ExponentialSmoothing(
-			ts_clean,
-			trend="add",
-			seasonal=None
-		).fit( )
-	
-	hw_fc = hw.forecast( steps=steps )
-	forecasts[ "Holt-Winters" ] = hw_fc
-	
-	return forecasts
 
 # -------------------------------------------------------------------------------------------------
-# Streamlit UI
+# Excel helpers
 # -------------------------------------------------------------------------------------------------
+def list_excel_sheets_from_upload(uploaded: io.BytesIO) -> List[str]:
+    try:
+        return list(pd.ExcelFile(uploaded).sheet_names)
+    except Exception:
+        return []
 
-st.set_page_config( page_title='Cutey-Py', layout='wide', page_icon=r'resources/assets/favicon.ico' )
 
-st.title( 'Balance Projection' )
-with st.expander( "Account-A Data", expanded=False ):
-	st.markdown(
-		"""
-- Upload a **CSV** or **Excel** file containing account/budget balance fields.
-- The original notebook uses an Excel input and common fields such as obligations, outlays,
-unobligated balance,
-  total resources, and a fiscal year-like period field (for time-series aggregation).
-  :contentReference[oaicite:1]{index=1}
-		"""
-	)
+def list_excel_sheets_from_path(path: Path) -> List[str]:
+    try:
+        return list(pd.ExcelFile(path).sheet_names)
+    except Exception:
+        return []
 
-# Sidebar: upload
-st.sidebar.header( '1) Load Data' )
-uploaded = st.sidebar.file_uploader( 'Upload CSV/XLSX', type=[ 'csv',  'xlsx', 'xls' ] )
 
-df: Optional[ pd.DataFrame ] = None
+@st.cache_data(show_spinner=False)
+def load_table(
+    uploaded_file: io.BytesIO | None,
+    uploaded_name: str | None,
+    sheet_name: str | None
+) -> pd.DataFrame:
+    """Load data from either an uploaded file or the fallback Excel file."""
+    if uploaded_file is not None and uploaded_name:
+        name = uploaded_name.lower()
+        if name.endswith(".csv"):
+            return pd.read_csv(uploaded_file)
+        if name.endswith((".xlsx", ".xls")):
+            return pd.read_excel(uploaded_file, sheet_name=sheet_name)
+        raise ValueError("Unsupported uploaded file type. Use .csv, .xlsx, or .xls.")
+    if not FALLBACK_DATA_PATH.exists():
+        raise FileNotFoundError(f"Fallback file not found: {FALLBACK_DATA_PATH.resolve()}")
+    return pd.read_excel(FALLBACK_DATA_PATH, sheet_name=sheet_name)
 
-if uploaded is not None:
-	sheet_name: Optional[ str ] = None
-	if uploaded.name.lower( ).endswith( ('.xlsx', '.xls') ):
-		sheets = _list_excel_sheets( uploaded )
-		if sheets:
-			sheet_name = st.sidebar.selectbox( 'Excel sheet', sheets, index=0 )
-		else:
-			sheet_name = None
-	
-	try:
-		df = load_table_from_upload( uploaded, uploaded.name, sheet_name=sheet_name )
-	except Exception as e:
-		st.error( f'Failed to load file: {e}' )
-		st.stop( )
 
-if df is None:
-	st.info( 'Upload a dataset to begin.' )
-	st.stop( )
+# -------------------------------------------------------------------------------------------------
+# Sidebar – data loading
+# -------------------------------------------------------------------------------------------------
+st.sidebar.header("Account-A Data")
 
-st.sidebar.success( f'Loaded: {df.shape[ 0 ]:,} rows × {df.shape[ 1 ]:,} columns' )
-
-tabs = st.tabs(
-	[
-		'Data',
-		'Descriptive Stats',
-		'Distributions',
-		'Transforms',
-		'PCA + Clustering',
-		'Correlations',
-		'Regression',
-		'Time Series',
-		'Export',
-	]
+uploaded = st.sidebar.file_uploader(
+    "Upload CSV/XLSX (optional — fallback will be used if omitted)",
+    type=["csv", "xlsx", "xls"]
 )
 
-# -----------------------
-# Data tab
-# -----------------------
-with tabs[ 0 ]:
-	st.subheader( 'Data Preview' )
-	st.dataframe( df, use_container_width=True, height=420 )
-	
-	st.subheader( 'Column Types' )
-	df_types = pd.DataFrame(
-		{
-				'Column': df.columns,
-				'DType': [ str( t ) for t in df.dtypes ] }
-	)
-	st.dataframe( df_types, use_container_width=True, height=320 )
+sheet_name: Optional[str] = None
 
-# -----------------------
-# Descriptive stats
-# -----------------------
-with tabs[ 1 ]:
-	st.subheader( 'Descriptive Statistics' )
-	
-	numeric_cols = _numeric_columns( df )
-	if not numeric_cols:
-		st.warning( 'No numeric columns detected.' )
-	else:
-		selected = st.multiselect(
-			'Numeric columns to summarize',
-			options=numeric_cols,
-			default=numeric_cols[ : min( 10, len( numeric_cols ) ) ],
-		)
-		
-		if selected:
-			df_num = _coerce_numeric( df[ selected ], selected )
-			st.dataframe( df_num.describe( percentiles=[ 0.05, 0.1, 0.25, 0.5,  0.75,  0.9, 0.95 ] ).round( 3 ),
-				use_container_width=True )
+if uploaded is not None and uploaded.name.lower().endswith((".xlsx", ".xls")):
+    sheets = list_excel_sheets_from_upload(uploaded)
+elif uploaded is None and FALLBACK_DATA_PATH.exists():
+    sheets = list_excel_sheets_from_path(FALLBACK_DATA_PATH)
+else:
+    sheets = []
 
-# -----------------------
-# Distributions
-# -----------------------
-with tabs[ 2 ]:
-	st.subheader( 'Distributions / Normality Checks' )
-	
-	numeric_cols = _numeric_columns( df )
-	if not numeric_cols:
-		st.warning( 'No numeric columns detected.' )
-	else:
-		cols = st.multiselect(
-			'Columns',
-			options=numeric_cols,
-			default=numeric_cols[ : min( 6, len( numeric_cols ) ) ],
-		)
-		bins = st.slider( 'Histogram bins', min_value=10, max_value=100, value=30, step=5 )
-		
-		if cols:
-			plot_histograms( df, cols, bins=bins )
-		
-		st.markdown( '---' )
-		qq_col = st.selectbox( 'Q-Q plot column', options=numeric_cols )
-		if qq_col:
-			plot_qq( df, qq_col )
+if sheets:
+    sheet_name = st.sidebar.selectbox("Excel Sheet", sheets, index=0)
 
-# -----------------------
-# Transforms
-# -----------------------
-with tabs[ 3 ]:
-	st.subheader( 'Transformations (log1p / scaling)' )
-	
-	numeric_cols = _numeric_columns( df )
-	if not numeric_cols:
-		st.warning( 'No numeric columns detected.' )
-	else:
-		cols = st.multiselect( 'Columns to transform', options=numeric_cols,
-			default=numeric_cols[ : min( 6, len( numeric_cols ) ) ], )
-		
-		transform = st.selectbox( 'Transform', options=[ 'None', 'log1p', 'StandardScaler', 'MinMaxScaler' ] )
-		if cols:
-			df_work = _coerce_numeric( df[ cols ], cols )			
-			if transform == 'log1p':
-				df_out = np.log1p( df_work )
-			elif transform == 'StandardScaler':
-				df_out = pd.DataFrame( StandardScaler( ).fit_transform( df_work.dropna( ) ), columns=cols )
-			elif transform == 'MinMaxScaler':
-				df_out = pd.DataFrame( MinMaxScaler( ).fit_transform( df_work.dropna( ) ), columns=cols )
-			else:
-				df_out = df_work
-			
-			st.dataframe( df_out.head( 50 ), use_container_width=True )
+try:
+    df = load_table(
+        uploaded_file=uploaded,
+        uploaded_name=uploaded.name if uploaded else None,
+        sheet_name=sheet_name
+    )
+except Exception as e:
+    st.error(f"Data load failed: {e}")
+    st.stop()
 
-# -----------------------
-# PCA + Clustering
-# -----------------------
-with tabs[ 4 ]:
-	st.subheader( "PCA + KMeans Clustering" )
-	
-	numeric_cols = _numeric_columns( df )
-	if len( numeric_cols ) < 2:
-		st.warning( "Need at least 2 numeric columns for PCA/clustering." )
-	else:
-		cols = st.multiselect(
-			"Columns for PCA",
-			options=numeric_cols,
-			default=numeric_cols[ : min( 8, len( numeric_cols ) ) ],
-		)
-		scale = st.selectbox( 'Scaling', options=[ 'none',  'standard', 'minmax' ], index=1 )
-		n_components = st.slider( 'PCA components', min_value=2, max_value=min( 10, len( cols ) if
-		cols else 2 ), value=2 )
-		k = st.slider( 'KMeans clusters (k)', min_value=2, max_value=10, value=3 )
-		
-		if cols and len( cols ) >= 2:
-			try:
-				df_comps, pca = run_pca( df, cols, n_components=n_components, scale=scale )
-				
-				labels = run_kmeans( df_comps, k=k )
-				df_plot = df_comps.copy( )
-				df_plot[ 'Cluster' ] = labels
-				
-				st.write( 'Explained variance ratio:', np.round( pca.explained_variance_ratio_, 4 ) )
-				if 'PC1' in df_plot.columns and 'PC2' in df_plot.columns:
-					fig = _safe_fig( )
-					ax = fig.add_subplot( 111 )
-					ax.scatter( df_plot[ 'PC1' ], df_plot[ 'PC2' ] )
-					ax.set_title( 'PCA Scatter (PC1 vs PC2)' )
-					ax.set_xlabel( 'PC1' )
-					ax.set_ylabel( 'PC2' )
-					st.pyplot( fig )
-				
-				st.dataframe( df_plot.head( 200 ), use_container_width=True )
-			except Exception as e:
-				st.error( f'PCA/Clustering failed: {e}' )
+st.sidebar.success(
+    f"Loaded {df.shape[0]:,} rows × {df.shape[1]:,} columns"
+    + (" (fallback)" if uploaded is None else "")
+)
 
-# -----------------------
-# Correlations
-# -----------------------
-with tabs[ 5 ]:
-	st.subheader( 'Correlation Matrices' )
-	
-	numeric_cols = _numeric_columns( df )
-	if len( numeric_cols ) < 2:
-		st.warning( 'Need at least 2 numeric columns for correlations.' )
-	else:
-		cols = st.multiselect(
-			'Columns',
-			options=numeric_cols,
-			default=numeric_cols[ : min( 12, len( numeric_cols ) ) ],
-		)
-		method = st.selectbox( 'Method', options=[ 'pearson',
-		                                           'spearman',
-		                                           'kendall' ], index=0 )
-		
-		if cols and len( cols ) >= 2:
-			corr = compute_correlations( df, cols, method=method )
-			st.dataframe( corr.round( 4 ), use_container_width=True )
+dup_count = int(pd.Index(df.columns).duplicated().sum())
+if dup_count > 0:
+    st.sidebar.warning(f"Detected {dup_count} duplicate column header(s) in this dataset.")
 
-# -----------------------
-# Regression
-# -----------------------
-with tabs[ 6 ]:
-	st.subheader( 'Regression Model Comparison' )
-	
-	numeric_cols = _numeric_columns( df )
-	if len( numeric_cols ) < 2:
-		st.warning( 'Need numeric columns for regression.' )
-	else:
-		feature_cols = st.multiselect(
-			'Predictors (X)',
-			options=numeric_cols,
-			default=[ c for c in [ 'Obligations', 'UnobligatedBalance',  'Outlays' ] if c in df.columns ]
-			        or numeric_cols[ : min( 3, len( numeric_cols ) ) ],
-		)
-		target_col = st.selectbox(
-			'Target (y)',
-			options=numeric_cols,
-			index=(
-				numeric_cols.index( 'TotalResources' ) if 'TotalResources' in numeric_cols else 0),
-		)
-		
-		c1, c2, c3, c4 = st.columns( 4 )
-		with c1:
-			test_size = st.slider( 'Test size', 0.1, 0.5, 0.2, 0.05 )
-		with c2:
-			random_state = st.number_input( 'Random state', min_value=0, max_value=10_000,
-				value=42, step=1 )
-		with c3:
-			use_poly = st.checkbox( 'Include polynomial regression', value=True )
-		with c4:
-			poly_degree = st.slider( 'Polynomial degree', 2, 5, 2 )
-		
-		if feature_cols and target_col:
-			try:
-				results_df, pred_df, fitted = run_regressions( df=df, feature_cols=feature_cols,
-					target_col=target_col, test_size=float( test_size ), random_state=int( random_state ),
-					use_poly=bool( use_poly ), poly_degree=int( poly_degree ), )
-				
-				st.markdown( '#### Model Metrics (sorted by R²)' )
-				st.dataframe( results_df, use_container_width=True )
-				
-				st.markdown( '#### Predictions Preview' )
-				st.dataframe( pred_df.head( 200 ), use_container_width=True )
-				
-				best_model = results_df.iloc[ 0 ][ "Model" ]
-				st.markdown( f"#### Diagnostics for Best Model: `{best_model}`" )
-				
-				y_true = pred_df[ 'Actual' ].values
-				y_pred = pred_df[ best_model ].values
-				
-				plot_actual_vs_pred( y_true, y_pred, title=f'Actual vs Predicted — {best_model}' )
-				plot_residuals( y_true, y_pred, title=f'Residuals — {best_model}' )
-			
-			except Exception as e:
-				st.error( f'Regression failed: {e}' )
 
-# -----------------------
-# Time series
-# -----------------------
-with tabs[ 7 ]:
-	st.subheader( 'Time Series (Aggregate by Period → Forecast)' )
-	
-	if not _HAS_STATSMODELS:
-		msg = 'statsmodels is not available in this environment. Install ARIMA/Holt-Winters.'
-		st.warning( 'statsmodels is not available in this environment. Install ARIMA/Holt-Winters.' )
-	else:
-		# Period column selection (the notebook references BeginningPeriodOfAvailability)
-		period_candidates = [ c for c in df.columns if
-		                      'year' in c.lower( ) or 'period' in c.lower( ) or 'availability' in
-		                      c.lower( ) ]
-		period_col = st.selectbox(
-			'Period column (year/period)',
-			options=period_candidates if period_candidates else list( df.columns ),
-			index=(period_candidates.index( 'BeginningPeriodOfAvailability' )
-			       if 'BeginningPeriodOfAvailability' in period_candidates else 0),
-		)
-		
-		numeric_cols = _numeric_columns( df )
-		value_candidates = [ c for c in numeric_cols if c not in [ period_col ] ]
-		value_cols = st.multiselect( 'Values to aggregate (sum) by period', options=value_candidates,
-			default=[ c for c in [ 'AnnualAppropriations', 'CarryoverAuthority', 'UnobligatedBalance', 'TotalResources' ]
-			          if c in value_candidates ] or value_candidates[
-				        : min( 3, len( value_candidates ) ) ],
-		)
-		
-		target_ts_col = st.selectbox( 'Forecast which aggregated series?',
-			options=value_cols if value_cols else value_candidates,
-			index=0 if value_cols else 0,
-		)
-		
-		steps = st.slider( 'Forecast steps', min_value=1, max_value=10, value=2 )
-		p = st.slider( 'ARIMA p', 0, 5, 1 )
-		d = st.slider( 'ARIMA d', 0, 2, 1 )
-		q = st.slider( 'ARIMA q', 0, 5, 1 )
-		seasonal_period = st.number_input( 'Holt-Winters seasonal period (optional)', min_value=0,
-			max_value=24, value=0, step=1 )
-		
-		if period_col and value_cols and target_ts_col:
-			try:
-				df_ts = df[ [ period_col ] + value_cols ].copy( )
-				df_ts[ period_col ] = pd.to_numeric( df_ts[ period_col ], errors='coerce' )
-				df_ts = _coerce_numeric( df_ts, value_cols )
-				df_ts = df_ts.dropna( subset=[ period_col ] )
-				
-				agg = df_ts.groupby( period_col )[ value_cols ].sum( ).sort_index( )
-				st.markdown( '#### Aggregated Time Series' )
-				st.dataframe( agg, use_container_width=True )
-				
-				# Plot target series
-				fig = _safe_fig( )
-				ax = fig.add_subplot( 111 )
-				ax.plot( agg.index.values, agg[ target_ts_col ].values, marker='o' )
-				ax.set_title( f'Trend: {target_ts_col} by {period_col}' )
-				ax.set_xlabel( period_col )
-				ax.set_ylabel( target_ts_col )
-				st.pyplot( fig )
-				
-				# Forecast
-				ts = agg[ target_ts_col ]
-				forecasts = forecast_time_series(
-					ts=ts,
-					steps=int( steps ),
-					arima_order=(int( p ), int( d ), int( q )),
-					seasonal_period=(
-						int( seasonal_period ) if int( seasonal_period ) > 0 else None),
-				)
-				
-				st.markdown( '#### Forecasts' )
-				df_fc = pd.DataFrame( { k: v.values for k, v in forecasts.items( ) } )
-				st.dataframe( df_fc.round( 4 ), use_container_width=True )
-				
-				fig2 = _safe_fig( )
-				ax2 = fig2.add_subplot( 111 )
-				ax2.plot( ts.index.values, ts.values, marker="o", label="Actual" )
-				# Extend x-axis labels for forecast
-				last_x = float( ts.index.values[ -1 ] )
-				x_fc = np.arange( last_x + 1, last_x + 1 + int( steps ) )
-				for name, series_fc in forecasts.items( ):
-					ax2.plot( x_fc, series_fc.values, marker='o', label=name )
-				
-				ax2.set_title( f'Forecast: {target_ts_col}' )
-				ax2.set_xlabel( period_col )
-				ax2.set_ylabel( target_ts_col )
-				ax2.legend( )
-				st.pyplot( fig2 )
-			
-			except Exception as e:
-				st.error( f'Time series analysis failed: {e}' )
+# -------------------------------------------------------------------------------------------------
+# Tabs
+# -------------------------------------------------------------------------------------------------
+tabs = st.tabs([
+    "Data",
+    "Descriptive Stats",
+    "Distributions",
+    "Transforms",
+    "PCA + Clustering",
+    "Correlations",
+    "Regression",
+    "Inferential Stats",
+    "Time Series",
+    "Export",
+])
 
-# -----------------------
-# Export
-# -----------------------
-with tabs[ 8 ]:
-	st.subheader( 'Export' )
-	
-	st.write( 'Download the currently loaded dataset (as CSV) after any upstream cleaning you '
-	          'performed externally.' )
-	
-	csv_bytes = df.to_csv( index=False ).encode( 'utf-8' )
-	st.download_button( label='Download CSV', data=csv_bytes, file_name='cutey_export.csv',
-		mime='text/csv', )
+
+# -------------------------------------------------------------------------------------------------
+# TAB 0 — Data
+# -------------------------------------------------------------------------------------------------
+with tabs[0]:
+    st.subheader("Data Preview")
+    st.dataframe(df, use_container_width=True, height=420)
+
+    st.subheader("Column Types")
+    st.dataframe(
+        pd.DataFrame({"Column": df.columns, "DType": df.dtypes.astype(str)}),
+        use_container_width=True
+    )
+
+    if dup_count > 0:
+        st.info(
+            "Duplicate headers detected. When a single column is requested by name, "
+            "the first matching column is used to ensure 1-D inputs for computations."
+        )
+
+
+# -------------------------------------------------------------------------------------------------
+# TAB 1 — Descriptive Stats (enhanced)
+# -------------------------------------------------------------------------------------------------
+with tabs[1]:
+    cols = numeric_columns(df)
+    if not cols:
+        st.warning("No numeric columns detected.")
+    else:
+        selected = st.multiselect("Columns", cols, default=cols[: min(8, len(cols))])
+        if selected:
+            num = coerce_numeric(df[selected], selected)
+
+            c1, c2 = st.columns(2)
+            with c1:
+                st.markdown("**Core Summary**")
+                st.dataframe(
+                    num.describe(percentiles=[0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95]).round(3),
+                    use_container_width=True
+                )
+            with c2:
+                st.markdown("**Extended Summary**")
+                extended = pd.DataFrame({
+                    "missing_count": num.isna().sum(),
+                    "missing_pct": (num.isna().mean() * 100.0).round(2),
+                    "zero_count": (num == 0).sum(),
+                    "unique_count": num.nunique(),
+                    "skewness": num.skew(numeric_only=True),
+                    "kurtosis": num.kurtosis(numeric_only=True),
+                }).round(3)
+                st.dataframe(extended, use_container_width=True)
+
+            # Small grouped bar demo for first 5 rows (series delineation with edges/hatching)
+            st.markdown("**Grouped Bar (first 5 rows)**")
+            head = num.head(5).reset_index(drop=True)
+            fig = new_fig(12, 5)
+            ax = fig.add_subplot(111)
+            x = np.arange(head.shape[0])
+            width = max(0.8 / max(1, head.shape[1]), 0.12)
+            for i, col in enumerate(head.columns):
+                offset = (i - (head.shape[1] - 1) / 2) * width
+                ax.bar(
+                    x + offset,
+                    head[col].values,
+                    width=width,
+                    label=col,
+                    color=PALETTE[i % len(PALETTE)],
+                    edgecolor="black",
+                    linewidth=0.6,
+                    alpha=0.85,
+                    hatch="/\\"[i % 2],
+                )
+            ax.set_xticks(x)
+            ax.set_xticklabels([f"r{i}" for i in range(1, head.shape[0] + 1)])
+            ax.set_title("Grouped Bars")
+            ax.legend(ncol=3, fontsize=8)
+            st.pyplot(fig)
+
+# -------------------------------------------------------------------------------------------------
+# TAB 2 — Inferential Stats (new)
+# -------------------------------------------------------------------------------------------------
+with tabs[7]:
+    st.subheader("Inferential Statistics")
+    # Choose a numeric target and (optional) grouping/categorical column
+    num_cols = numeric_columns(df)
+    if not num_cols:
+        st.warning("No numeric columns detected for inferential tests.")
+    else:
+        y_col = st.selectbox("Numeric variable", num_cols, key="infer_y")
+        group_col_opts = [c for c in df.columns if c not in num_cols]
+        group_col = st.selectbox("Grouping column (optional)", ["<None>"] + group_col_opts, index=0)
+
+        y = pd.to_numeric(series_from_column(df, y_col), errors="coerce")
+        y = y.dropna()
+
+        # Single-variable tests (distributional)
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            k2, p_sw = stats.shapiro(y.sample(min(len(y), 500), random_state=42)) if len(y) > 3 else (np.nan, np.nan)
+            st.metric("Shapiro–Wilk W (Normality)", f"{k2:.4f}" if not np.isnan(k2) else "n/a")
+            st.caption("H0: data are normally distributed")
+        with c2:
+            # KS against standard normal (z-scored)
+            ys = (y - y.mean()) / (y.std(ddof=1) or 1.0)
+            ks, p_ks = stats.kstest(ys, "norm")
+            st.metric("KS statistic vs N(0,1)", f"{ks:.4f}")
+            st.caption("H0: distribution equals standard normal")
+        with c3:
+            # 95% CI for mean
+            mu = y.mean()
+            se = y.std(ddof=1) / np.sqrt(len(y))
+            tcrit = stats.t.ppf(0.975, df=max(len(y) - 1, 1))
+            lo = mu - tcrit * se
+            hi = mu + tcrit * se
+            st.metric("95% CI for mean", f"[{lo:.3f}, {hi:.3f}]")
+
+        # If group column chosen, run 2-sample or ANOVA as applicable
+        if group_col != "<None>":
+            gser = series_from_column(df, group_col)
+            # Align on same index
+            tmp = pd.DataFrame({"y": y, "g": gser}).dropna()
+            groups = [grp["y"].values for _, grp in tmp.groupby("g")]
+
+            st.markdown("---")
+            if len(groups) == 2:
+                # t-test, Mann-Whitney, Levene
+                tstat, p_t = stats.ttest_ind(groups[0], groups[1], equal_var=False, nan_policy="omit")
+                ustat, p_u = stats.mannwhitneyu(groups[0], groups[1], alternative="two-sided")
+                lstat, p_l = stats.levene(groups[0], groups[1], center="median")
+
+                st.write("**Two-group tests**")
+                st.table(pd.DataFrame({
+                    "Test": ["Welch t-test", "Mann-Whitney U", "Levene (equal variances)"],
+                    "Statistic": [tstat, ustat, lstat],
+                    "p-value": [p_t, p_u, p_l],
+                }).round(5))
+            elif len(groups) >= 3:
+                fstat, p_a = stats.f_oneway(*groups)
+                st.write("**One-way ANOVA**")
+                st.table(pd.DataFrame({"F": [fstat], "p-value": [p_a]}).round(5))
+            else:
+                st.info("Grouping column does not contain multiple levels after cleaning.")
+# -------------------------------------------------------------------------------------------------
+# TAB 3 — Distributions (enhanced drawing)
+# -------------------------------------------------------------------------------------------------
+with tabs[2]:
+    cols = numeric_columns(df)
+    if not cols:
+        st.warning("No numeric columns detected.")
+    else:
+        chosen = st.multiselect("Histogram Columns", cols, default=cols[: min(4, len(cols))])
+        bins = st.slider("Bins", 10, 100, 36)
+
+        # Overlaid histograms with edge delineation and alpha
+        if chosen:
+            fig = new_fig(12, 5)
+            ax = fig.add_subplot(111)
+            for i, c in enumerate(chosen):
+                s = pd.to_numeric(series_from_column(df, c), errors="coerce").dropna()
+                ax.hist(
+                    s,
+                    bins=bins,
+                    alpha=0.40,
+                    label=c,
+                    color=PALETTE[i % len(PALETTE)],
+                    edgecolor="black",
+                    linewidth=0.5,
+                )
+            ax.set_title("Overlaid Histograms (alpha + edges)")
+            ax.legend(ncol=3, fontsize=8)
+            st.pyplot(fig)
+
+        st.markdown("---")
+
+        # Q-Q plot with clear markers
+        qq_col = st.selectbox("Q-Q Plot Column", cols)
+        sqq = pd.to_numeric(series_from_column(df, qq_col), errors="coerce").dropna()
+        if len(sqq) < 5:
+            st.warning("Not enough values for a Q-Q plot.")
+        else:
+            fig = new_fig()
+            ax = fig.add_subplot(111)
+            (osm, osr), (slope, intercept, r) = stats.probplot(sqq, dist="norm")
+            ax.scatter(osm, osr, marker="o", s=18, edgecolor="black", linewidths=0.4, alpha=0.8)
+            ax.plot(osm, slope * np.asarray(osm) + intercept, linestyle="--", color="#444444")
+            ax.set_title(f"Q-Q Plot – {qq_col} (r={r:.3f})")
+            st.pyplot(fig)
+
+
+# -------------------------------------------------------------------------------------------------
+# TAB 3 — Transforms
+# -------------------------------------------------------------------------------------------------
+with tabs[3]:
+    cols = numeric_columns(df)
+    if not cols:
+        st.warning("No numeric columns detected.")
+    else:
+        selected = st.multiselect("Columns", cols, default=cols[: min(4, len(cols))])
+        transform = st.selectbox("Transform", ["None", "log1p", "StandardScaler", "MinMaxScaler"])
+
+        if selected:
+            data = coerce_numeric(df[selected], selected).dropna()
+            if data.empty:
+                st.warning("No complete numeric rows after coercion and NA filtering.")
+            else:
+                if transform == "log1p":
+                    data_out = np.log1p(data)
+                elif transform == "StandardScaler":
+                    data_out = pd.DataFrame(StandardScaler().fit_transform(data), columns=selected)
+                elif transform == "MinMaxScaler":
+                    data_out = pd.DataFrame(MinMaxScaler().fit_transform(data), columns=selected)
+                else:
+                    data_out = data
+                st.dataframe(data_out.head(100), use_container_width=True)
+
+
+# -------------------------------------------------------------------------------------------------
+# TAB 4 — PCA + Clustering (enhanced markers/colors)
+# -------------------------------------------------------------------------------------------------
+with tabs[4]:
+    cols = numeric_columns(df)
+    if len(cols) < 2:
+        st.warning("Need at least two numeric columns.")
+    else:
+        selected = st.multiselect("PCA Columns", cols, default=cols[: min(6, len(cols))])
+        if len(selected) >= 2:
+            scale = st.selectbox("Scaling", ["standard", "minmax", "none"], index=0)
+            k = st.slider("Clusters (k)", 2, 10, 3)
+
+            Xdf = coerce_numeric(df[selected], selected).dropna()
+            if Xdf.shape[0] < 10:
+                st.warning("Not enough numeric rows for PCA/clustering.")
+            else:
+                X = Xdf.values
+                if scale == "standard":
+                    X = StandardScaler().fit_transform(X)
+                elif scale == "minmax":
+                    X = MinMaxScaler().fit_transform(X)
+
+                pca = PCA(n_components=2, random_state=42)
+                comps = pca.fit_transform(X)
+                labels = KMeans(n_clusters=k, n_init=10, random_state=42).fit_predict(comps)
+
+                fig = new_fig()
+                ax = fig.add_subplot(111)
+                for lab in np.unique(labels):
+                    idx = labels == lab
+                    color = PALETTE[int(lab) % len(PALETTE)]
+                    marker = MARKERS[int(lab) % len(MARKERS)]
+                    ax.scatter(
+                        comps[idx, 0],
+                        comps[idx, 1],
+                        label=f"Cluster {lab}",
+                        marker=marker,
+                        edgecolor="black",
+                        linewidth=0.4,
+                        alpha=0.90,
+                        c=color,
+                    )
+                ax.set_title("PCA (PC1 vs PC2) with KMeans")
+                ax.set_xlabel("PC1")
+                ax.set_ylabel("PC2")
+                ax.legend(ncol=3, fontsize=8)
+                st.pyplot(fig)
+
+                st.write("Explained variance ratio:", np.round(pca.explained_variance_ratio_, 4))
+
+
+# -------------------------------------------------------------------------------------------------
+# TAB 5 — Correlations (add heatmap)
+# -------------------------------------------------------------------------------------------------
+with tabs[5]:
+    cols = numeric_columns(df)
+    if len(cols) < 2:
+        st.warning("Need at least two numeric columns.")
+    else:
+        selected = st.multiselect("Correlation Columns", cols, default=cols[: min(8, len(cols))])
+        if len(selected) >= 2:
+            method = st.selectbox("Method", ["pearson", "spearman", "kendall"], index=0)
+            cdf = coerce_numeric(df[selected], selected)
+            corr = cdf.corr(method=method)
+            st.dataframe(corr.round(4), use_container_width=True)
+
+            # Heatmap for better visual delineation
+            fig = new_fig(8, 6)
+            ax = fig.add_subplot(111)
+            im = ax.imshow(corr.values, cmap="coolwarm", vmin=-1, vmax=1)
+            ax.set_xticks(np.arange(len(selected)))
+            ax.set_yticks(np.arange(len(selected)))
+            ax.set_xticklabels(selected, rotation=45, ha="right")
+            ax.set_yticklabels(selected)
+            for i in range(len(selected)):
+                for j in range(len(selected)):
+                    ax.text(j, i, f"{corr.values[i, j]:.2f}",
+                            ha="center", va="center", fontsize=8, color="black")
+            ax.set_title("Correlation Heatmap")
+            fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+            st.pyplot(fig)
+
+
+# -------------------------------------------------------------------------------------------------
+# TAB 6 — Regression (expanded models; guaranteed 1-D target)
+# -------------------------------------------------------------------------------------------------
+with tabs[6]:
+    cols = numeric_columns(df)
+    if len(cols) < 2:
+        st.warning("Need numeric columns for regression.")
+    else:
+        X_cols = st.multiselect("Predictors (X)", cols, default=cols[: min(4, len(cols))])
+        y_col = st.selectbox("Target (y)", cols)
+
+        if X_cols and y_col:
+            # Build X safely (duplicate headers supported)
+            X_parts: Dict[str, pd.Series] = {
+                c: pd.to_numeric(series_from_column(df, c), errors="coerce") for c in X_cols
+            }
+            X = pd.DataFrame(X_parts)
+
+            # Build y as guaranteed 1-D
+            y = pd.to_numeric(series_from_column(df, y_col), errors="coerce")
+
+            # Align and clean
+            train = X.copy()
+            train["__target__"] = y
+            train = train.dropna()
+
+            if train.shape[0] < 20:
+                st.warning("Not enough complete numeric rows for regression (need at least 20).")
+            else:
+                X_clean = train[X_cols]
+                y_clean = train["__target__"]
+
+                X_train, X_test, y_train, y_test = train_test_split(
+                    X_clean, y_clean, test_size=0.2, random_state=42
+                )
+
+                models = {
+                    "Linear": LinearRegression(),
+                    "Ridge": Ridge(alpha=10.0),
+                    "Lasso": Lasso(alpha=10.0, max_iter=10000),
+                    "BayesianRidge": BayesianRidge(),
+                    "ElasticNet": ElasticNet(alpha=0.1, l1_ratio=0.5, max_iter=10000),
+                    "HuberRegressor": HuberRegressor(),
+                    "SGDRegressor": SGDRegressor(max_iter=2000, tol=1e-3),
+                    "RandomForestRegressor": RandomForestRegressor(
+                        n_estimators=200, random_state=42
+                    ),
+                    "GradientBoostingRegressor": GradientBoostingRegressor(random_state=42),
+                }
+
+                results = []
+                for name, model in models.items():
+                    model.fit(X_train, y_train)     # y is 1-D by construction
+                    pred = model.predict(X_test)
+                    results.append({
+                        "Model": name,
+                        "MSE": float(mean_squared_error(y_test, pred)),
+                        "R²": float(r2_score(y_test, pred)),
+                    })
+
+                res_df = pd.DataFrame(results).sort_values("R²", ascending=False).round(4)
+                st.dataframe(res_df, use_container_width=True)
+
+                # Diagnostics plot for top 1 model
+                top = res_df.iloc[0]["Model"]
+                st.markdown(f"**Diagnostics: {top}**")
+                top_model = models[top]
+                y_pred = top_model.predict(X_test)
+
+                # Actual vs Predicted
+                fig = new_fig()
+                ax = fig.add_subplot(111)
+                ax.scatter(y_test, y_pred, c="#1f77b4", edgecolor="black", linewidth=0.5, alpha=0.85)
+                lo = float(np.nanmin([np.nanmin(y_test), np.nanmin(y_pred)]))
+                hi = float(np.nanmax([np.nanmax(y_test), np.nanmax(y_pred)]))
+                ax.plot([lo, hi], [lo, hi], linestyle="--", color="#444444")
+                ax.set_title("Actual vs Predicted")
+                ax.set_xlabel("Actual")
+                ax.set_ylabel("Predicted")
+                st.pyplot(fig)
+
+                # Residuals
+                residuals = y_test - y_pred
+                fig = new_fig()
+                ax = fig.add_subplot(111)
+                ax.scatter(y_pred, residuals, c="#d62728", edgecolor="black", linewidth=0.5, alpha=0.85)
+                ax.axhline(0.0, linestyle="--", color="#444444")
+                ax.set_title("Residuals vs Predicted")
+                ax.set_xlabel("Predicted")
+                ax.set_ylabel("Residual (Actual - Predicted)")
+                st.pyplot(fig)
+
+
+
+# -------------------------------------------------------------------------------------------------
+# TAB 8 — Time Series
+# -------------------------------------------------------------------------------------------------
+with tabs[8]:
+    if not HAS_STATSMODELS:
+        st.warning("statsmodels is not installed. Install it to enable time-series forecasting.")
+    else:
+        period_candidates = [
+            c for c in df.columns
+            if "year" in str(c).lower() or "period" in str(c).lower() or "availability" in str(c).lower()
+        ]
+        if not period_candidates:
+            st.warning("No period/year-like column detected.")
+        else:
+            period_col = st.selectbox("Period Column", period_candidates)
+            value_cols = st.multiselect("Value Columns (sum by period)", numeric_columns(df))
+            if value_cols:
+                tmp = df[[period_col] + value_cols].copy()
+                tmp[period_col] = pd.to_numeric(series_from_column(tmp, period_col), errors="coerce")
+                tmp = coerce_numeric(tmp, value_cols).dropna(subset=[period_col])
+                agg = tmp.groupby(period_col)[value_cols].sum().sort_index()
+                st.dataframe(agg, use_container_width=True)
+
+                # Trend lines (distinct linestyles/markers)
+                fig = new_fig(12, 5)
+                ax = fig.add_subplot(111)
+                x = agg.index.values
+                for i, col in enumerate(value_cols):
+                    y = agg[col].values
+                    ax.plot(
+                        x, y,
+                        label=col,
+                        color=PALETTE[i % len(PALETTE)],
+                        linestyle=LINESTYLES[i % len(LINESTYLES)],
+                        marker=MARKERS[i % len(MARKERS)],
+                        linewidth=1.6,
+                        alpha=0.95,
+                    )
+                ax.set_title("Period Trends (distinct lines/markers)")
+                ax.legend(ncol=3, fontsize=8)
+                st.pyplot(fig)
+
+
+# -------------------------------------------------------------------------------------------------
+# TAB 9 — Export
+# -------------------------------------------------------------------------------------------------
+with tabs[9]:
+    st.download_button(
+        label="Download CSV",
+        data=df.to_csv(index=False).encode("utf-8"),
+        file_name="balance_projection_export.csv",
+        mime="text/csv",
+    )
