@@ -40,12 +40,19 @@ try:
 except Exception:
     HAS_STATSMODELS = False
 
+# -------------------------------------------------------------------------------------------------
+# CONSTANTS
+# -------------------------------------------------------------------------------------------------
+LOGO = r'resources\cutey_logo.ico'
+
+BLUE_DIVIDER = "<div style='height:2px;align:left;background:#0078FC;margin:6px 0 10px 0;'></div>"
 
 # -------------------------------------------------------------------------------------------------
 # Streamlit config
 # -------------------------------------------------------------------------------------------------
-st.set_page_config(page_title="Balance Projection (Cutey)", layout="wide")
-st.title("Balance Projection")
+st.logo( LOGO, size='large' )
+st.set_page_config(page_title="Cutey-Py", layout="wide", page_icon=r'resources\favicon.ico')
+st.subheader( "Balance Projection" )
 
 
 # -------------------------------------------------------------------------------------------------
@@ -207,24 +214,23 @@ tabs = st.tabs([
 # TAB 0 — Data
 # -------------------------------------------------------------------------------------------------
 with tabs[0]:
-    st.subheader("Data Preview")
-    st.dataframe(df, use_container_width=True, height=420)
+    st.markdown( "##### Data Preview" )
+    st.data_editor( df, width='content', height='auto', num_rows='dynamic' )
+    st.markdown( BLUE_DIVIDER, unsafe_allow_html=True )
+    
+    st.markdown( "##### Column Types" )
+    st.data_editor(
+        pd.DataFrame( {"Column": df.columns, "DType": df.dtypes.astype(str)} ),
+	    use_container_width=True, height='auto', num_rows='dynamic' )
 
-    st.subheader("Column Types")
-    st.dataframe(
-        pd.DataFrame({"Column": df.columns, "DType": df.dtypes.astype(str)}),
-        use_container_width=True
-    )
-
-    if dup_count > 0:
-        st.info(
-            "Duplicate headers detected. When a single column is requested by name, "
-            "the first matching column is used to ensure 1-D inputs for computations."
-        )
+if dup_count > 0:
+		st.info(
+			"Duplicate headers detected. When a single column is requested by name, "
+			"the first matching column is used to ensure 1-D inputs for computations." )
 
 
 # -------------------------------------------------------------------------------------------------
-# TAB 1 — Descriptive Stats (enhanced)
+# TAB 1 — Descriptive Stats
 # -------------------------------------------------------------------------------------------------
 with tabs[1]:
     cols = numeric_columns(df)
@@ -235,13 +241,12 @@ with tabs[1]:
         if selected:
             num = coerce_numeric(df[selected], selected)
 
-            c1, c2 = st.columns(2)
+            c1, c2 = st.columns( 2, border=True)
             with c1:
                 st.markdown("**Core Summary**")
-                st.dataframe(
-                    num.describe(percentiles=[0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95]).round(3),
-                    use_container_width=True
-                )
+                st.data_editor(
+                    num.describe( percentiles=[ 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95 ] ).round( 3 ),
+                    use_container_width=True, height='auto', num_rows='dynyamic' )
             with c2:
                 st.markdown("**Extended Summary**")
                 extended = pd.DataFrame({
@@ -252,9 +257,11 @@ with tabs[1]:
                     "skewness": num.skew(numeric_only=True),
                     "kurtosis": num.kurtosis(numeric_only=True),
                 }).round(3)
-                st.dataframe(extended, use_container_width=True)
-
-            # Small grouped bar demo for first 5 rows (series delineation with edges/hatching)
+                st.data_editor(extended, use_container_width=True, height='auto', num_rows='dynamic' )
+	            
+	        
+            st.markdown( BLUE_DIVIDER, unsafe_allow_html=True )
+	            
             st.markdown("**Grouped Bar (first 5 rows)**")
             head = num.head(5).reset_index(drop=True)
             fig = new_fig(12, 5)
@@ -275,59 +282,49 @@ with tabs[1]:
                     hatch="/\\"[i % 2],
                 )
             ax.set_xticks(x)
-            ax.set_xticklabels([f"r{i}" for i in range(1, head.shape[0] + 1)])
-            ax.set_title("Grouped Bars")
-            ax.legend(ncol=3, fontsize=8)
-            st.pyplot(fig)
+            ax.set_xticklabels([ f"r{i}" for i in range( 1, head.shape[ 0 ] + 1 ) ] )
+            ax.set_title( "Grouped Bars" )
+            ax.legend( ncol=3, fontsize=8 )
+            st.pyplot( fig )
 
 # -------------------------------------------------------------------------------------------------
-# TAB 2 — Inferential Stats (new)
+# TAB 2 — Inferential Stats
 # -------------------------------------------------------------------------------------------------
 with tabs[7]:
-    st.subheader("Inferential Statistics")
-    # Choose a numeric target and (optional) grouping/categorical column
-    num_cols = numeric_columns(df)
+    st.markdown( "##### Inferential Statistics")
+    num_cols = numeric_columns( df )
     if not num_cols:
         st.warning("No numeric columns detected for inferential tests.")
     else:
-        y_col = st.selectbox("Numeric variable", num_cols, key="infer_y")
+        y_col = st.selectbox( "Numeric variable", num_cols, key="infer_y" )
         group_col_opts = [c for c in df.columns if c not in num_cols]
-        group_col = st.selectbox("Grouping column (optional)", ["<None>"] + group_col_opts, index=0)
+        group_col = st.selectbox( "Grouping column (optional)", ["<None>"] + group_col_opts, index=0)
 
-        y = pd.to_numeric(series_from_column(df, y_col), errors="coerce")
-        y = y.dropna()
-
-        # Single-variable tests (distributional)
-        c1, c2, c3 = st.columns(3)
+        y = pd.to_numeric( series_from_column( df, y_col ), errors="coerce" )
+        y = y.dropna( )
+        c1, c2, c3 = st.columns( 3 )
         with c1:
             k2, p_sw = stats.shapiro(y.sample(min(len(y), 500), random_state=42)) if len(y) > 3 else (np.nan, np.nan)
-            st.metric("Shapiro–Wilk W (Normality)", f"{k2:.4f}" if not np.isnan(k2) else "n/a")
-            st.caption("H0: data are normally distributed")
+            st.metric( "Shapiro–Wilk W (Normality)", f"{k2:.4f}" if not np.isnan(k2) else "n/a" )
+            st.caption( "H0: data are normally distributed" )
         with c2:
-            # KS against standard normal (z-scored)
             ys = (y - y.mean()) / (y.std(ddof=1) or 1.0)
             ks, p_ks = stats.kstest(ys, "norm")
             st.metric("KS statistic vs N(0,1)", f"{ks:.4f}")
             st.caption("H0: distribution equals standard normal")
         with c3:
-            # 95% CI for mean
             mu = y.mean()
             se = y.std(ddof=1) / np.sqrt(len(y))
             tcrit = stats.t.ppf(0.975, df=max(len(y) - 1, 1))
             lo = mu - tcrit * se
             hi = mu + tcrit * se
             st.metric("95% CI for mean", f"[{lo:.3f}, {hi:.3f}]")
-
-        # If group column chosen, run 2-sample or ANOVA as applicable
         if group_col != "<None>":
             gser = series_from_column(df, group_col)
-            # Align on same index
             tmp = pd.DataFrame({"y": y, "g": gser}).dropna()
             groups = [grp["y"].values for _, grp in tmp.groupby("g")]
 
-            st.markdown("---")
             if len(groups) == 2:
-                # t-test, Mann-Whitney, Levene
                 tstat, p_t = stats.ttest_ind(groups[0], groups[1], equal_var=False, nan_policy="omit")
                 ustat, p_u = stats.mannwhitneyu(groups[0], groups[1], alternative="two-sided")
                 lstat, p_l = stats.levene(groups[0], groups[1], center="median")
@@ -344,8 +341,9 @@ with tabs[7]:
                 st.table(pd.DataFrame({"F": [fstat], "p-value": [p_a]}).round(5))
             else:
                 st.info("Grouping column does not contain multiple levels after cleaning.")
+			    
 # -------------------------------------------------------------------------------------------------
-# TAB 3 — Distributions (enhanced drawing)
+# TAB 3 — Distributions 
 # -------------------------------------------------------------------------------------------------
 with tabs[2]:
     cols = numeric_columns(df)
@@ -354,8 +352,6 @@ with tabs[2]:
     else:
         chosen = st.multiselect("Histogram Columns", cols, default=cols[: min(4, len(cols))])
         bins = st.slider("Bins", 10, 100, 36)
-
-        # Overlaid histograms with edge delineation and alpha
         if chosen:
             fig = new_fig(12, 5)
             ax = fig.add_subplot(111)
@@ -374,9 +370,7 @@ with tabs[2]:
             ax.legend(ncol=3, fontsize=8)
             st.pyplot(fig)
 
-        st.markdown("---")
-
-        # Q-Q plot with clear markers
+        st.markdown( BLUE_DIVIDER, unsafe_allow_html=True )
         qq_col = st.selectbox("Q-Q Plot Column", cols)
         sqq = pd.to_numeric(series_from_column(df, qq_col), errors="coerce").dropna()
         if len(sqq) < 5:
@@ -389,7 +383,6 @@ with tabs[2]:
             ax.plot(osm, slope * np.asarray(osm) + intercept, linestyle="--", color="#444444")
             ax.set_title(f"Q-Q Plot – {qq_col} (r={r:.3f})")
             st.pyplot(fig)
-
 
 # -------------------------------------------------------------------------------------------------
 # TAB 3 — Transforms
@@ -415,11 +408,10 @@ with tabs[3]:
                     data_out = pd.DataFrame(MinMaxScaler().fit_transform(data), columns=selected)
                 else:
                     data_out = data
-                st.dataframe(data_out.head(100), use_container_width=True)
-
+                st.data_editor(data_out.head(100), use_container_width=True, height='auto', num_rows='dynamic' )
 
 # -------------------------------------------------------------------------------------------------
-# TAB 4 — PCA + Clustering (enhanced markers/colors)
+# TAB 4 — PCA + Clustering
 # -------------------------------------------------------------------------------------------------
 with tabs[4]:
     cols = numeric_columns(df)
@@ -466,12 +458,13 @@ with tabs[4]:
                 ax.set_ylabel("PC2")
                 ax.legend(ncol=3, fontsize=8)
                 st.pyplot(fig)
-
                 st.write("Explained variance ratio:", np.round(pca.explained_variance_ratio_, 4))
-
+			    
+			    
+        st.markdown( BLUE_DIVIDER, unsafe_allow_html=True )
 
 # -------------------------------------------------------------------------------------------------
-# TAB 5 — Correlations (add heatmap)
+# TAB 5 — Correlations
 # -------------------------------------------------------------------------------------------------
 with tabs[5]:
     cols = numeric_columns(df)
@@ -483,8 +476,10 @@ with tabs[5]:
             method = st.selectbox("Method", ["pearson", "spearman", "kendall"], index=0)
             cdf = coerce_numeric(df[selected], selected)
             corr = cdf.corr(method=method)
-            st.dataframe(corr.round(4), use_container_width=True)
+            st.data_editor(corr.round(4), use_container_width=True, height='auto', num_rows='dynamic' )
 
+            st.markdown( BLUE_DIVIDER, unsafe_allow_html=True )
+        
             # Heatmap for better visual delineation
             fig = new_fig(8, 6)
             ax = fig.add_subplot(111)
@@ -501,9 +496,8 @@ with tabs[5]:
             fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
             st.pyplot(fig)
 
-
 # -------------------------------------------------------------------------------------------------
-# TAB 6 — Regression (expanded models; guaranteed 1-D target)
+# TAB 6 — Regression
 # -------------------------------------------------------------------------------------------------
 with tabs[6]:
     cols = numeric_columns(df)
@@ -563,7 +557,7 @@ with tabs[6]:
                     })
 
                 res_df = pd.DataFrame(results).sort_values("R²", ascending=False).round(4)
-                st.dataframe(res_df, use_container_width=True)
+                st.data_editor(res_df, use_container_width=True, height='auto', num_rows='dynamic' )
 
                 # Diagnostics plot for top 1 model
                 top = res_df.iloc[0]["Model"]
@@ -582,6 +576,8 @@ with tabs[6]:
                 ax.set_xlabel("Actual")
                 ax.set_ylabel("Predicted")
                 st.pyplot(fig)
+		        
+                st.markdown( BLUE_DIVIDER, unsafe_allow_html=True )
 
                 # Residuals
                 residuals = y_test - y_pred
@@ -593,8 +589,6 @@ with tabs[6]:
                 ax.set_xlabel("Predicted")
                 ax.set_ylabel("Residual (Actual - Predicted)")
                 st.pyplot(fig)
-
-
 
 # -------------------------------------------------------------------------------------------------
 # TAB 8 — Time Series
@@ -617,7 +611,7 @@ with tabs[8]:
                 tmp[period_col] = pd.to_numeric(series_from_column(tmp, period_col), errors="coerce")
                 tmp = coerce_numeric(tmp, value_cols).dropna(subset=[period_col])
                 agg = tmp.groupby(period_col)[value_cols].sum().sort_index()
-                st.dataframe(agg, use_container_width=True)
+                st.data_editor(agg, use_container_width=True, height='auto', num_rows='dynamic' )
 
                 # Trend lines (distinct linestyles/markers)
                 fig = new_fig(12, 5)
@@ -637,7 +631,6 @@ with tabs[8]:
                 ax.set_title("Period Trends (distinct lines/markers)")
                 ax.legend(ncol=3, fontsize=8)
                 st.pyplot(fig)
-
 
 # -------------------------------------------------------------------------------------------------
 # TAB 9 — Export
