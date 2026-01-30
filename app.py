@@ -43,15 +43,15 @@ except Exception:
 # -------------------------------------------------------------------------------------------------
 # CONSTANTS
 # -------------------------------------------------------------------------------------------------
-LOGO = r'resources\cutey_logo.png'
-
+LOGO = r'resources/cutey_logo.ico'
+FAVICON = r'resources/favicon.ico'
 BLUE_DIVIDER = "<div style='height:2px;align:left;background:#0078FC;margin:6px 0 10px 0;'></div>"
 
 # -------------------------------------------------------------------------------------------------
 # Streamlit config
 # -------------------------------------------------------------------------------------------------
 st.logo( LOGO, size='large' )
-st.set_page_config(page_title="Cutey-Py", layout="wide", page_icon=r'resources\favicon.ico')
+st.set_page_config(page_title="Cutey-Py", layout="wide", page_icon=r'resources/favicon.ico')
 st.subheader( "Balance Projection" )
 
 
