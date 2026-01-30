@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8de9ff8-79d2-408e-b0f2-399086430ff8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/MypyPlugin.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/cutey.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cutey.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/icon.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/assets/favicon.ico" beforeDir="false" />
-    </list>
+    <list default="true" id="b8de9ff8-79d2-408e-b0f2-399086430ff8" name="Changes" comment="UPDATE" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -78,11 +68,24 @@
       <option name="presentableId" value="Default" />
       <updated>1769540856259</updated>
       <workItem from="1769540857917" duration="1022000" />
-      <workItem from="1769543331486" duration="7487000" />
+      <workItem from="1769543331486" duration="7548000" />
     </task>
+    <task id="LOCAL-00001" summary="UPDATE">
+      <option name="closed" value="true" />
+      <created>1769601681687</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1769601681687</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="UPDATE" />
+    <option name="LAST_COMMIT_MESSAGE" value="UPDATE" />
   </component>
 </project>
