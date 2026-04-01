@@ -1,0 +1,66 @@
+'''
+  ******************************************************************************************
+      Assembly:                Cutey-Py
+      Filename:                name.py
+      Author:                  Terry D. Eppler
+      Created:                 05-31-2022
+
+      Last Modified By:        Terry D. Eppler
+      Last Modified On:        05-01-2025
+  ******************************************************************************************
+  <copyright file="guro.py" company="Terry D. Eppler">
+
+	     app.py
+	     Copyright ©  2022  Terry Eppler
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the “Software”),
+     to deal in the Software without restriction,
+     including without limitation the rights to use,
+     copy, modify, merge, publish, distribute, sublicense,
+     and/or sell copies of the Software,
+     and to permit persons to whom the Software is furnished to do so,
+     subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in all
+     copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+     INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+     IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+     DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+     ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     DEALINGS IN THE SOFTWARE.
+
+     You can contact me at:  terryeppler@gmail.com or eppler.terry@epa.gov
+
+  </copyright>
+  <summary>
+    app.py
+  </summary>
+  ******************************************************************************************
+'''
+from pathlib import Path
+
+# =======================================================
+# Constants
+# =======================================================
+FALLBACK_DATA_PATH = Path( 'data' ) / 'Account Balances.xlsx'
+
+PALETTE = [ '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+            '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', ]
+
+MARKERS = [ 'o', 's', '^', 'D', 'v', 'P', 'X', '*', '<', '>' ]
+
+LINESTYLES = [ '-', '--', '-.', ':', (0, (3, 1, 1, 1)), (0, (5, 1)) ]
+
+LOGO = r'resources/cutey_logo.ico'
+
+FAVICON = r'resources/favicon.ico'
+
+BLUE_DIVIDER = "<div style='height:2px;align:left;background:#0078FC;margin:6px 0 10px 0;'></div>"
+
+TABS = [ 'Data', 'Descriptive Stats', 'Inferential Stats', 'Distributions',
+        'Transforms', 'PCA + Clustering', 'Correlations', 'Regression',
+        'Time Series', 'Export', ]
