@@ -186,7 +186,7 @@ tabs = st.tabs( cfg.TABS )
 # =======================================================
 # Data
 # =======================================================
-with tabs[0]:
+with tabs[ 0 ]:
     st.markdown( '##### Data Preview' )
     st.data_editor( df, width='content', height='auto', num_rows='dynamic' )
     st.markdown( BLUE_DIVIDER, unsafe_allow_html=True )
@@ -261,7 +261,7 @@ with tabs[ 1 ]:
 # =======================================================
 #  Inferential Stats
 # =======================================================
-with tabs[7]:
+with tabs[ 7 ]:
     st.markdown( '##### Inferential Statistics')
     num_cols = numeric_columns( df )
     if not num_cols:
@@ -316,7 +316,7 @@ with tabs[7]:
 # =======================================================
 #  Distributions 
 # =======================================================
-with tabs[2]:
+with tabs[ 2 ]:
     cols = numeric_columns(df)
     if not cols:
         st.warning('No numeric columns detected.')
@@ -352,7 +352,7 @@ with tabs[2]:
 # =======================================================
 #  Transforms
 # =======================================================
-with tabs[3]:
+with tabs[ 3 ]:
     cols = numeric_columns(df)
     if not cols:
         st.warning('No numeric columns detected.')
@@ -378,7 +378,7 @@ with tabs[3]:
 # =======================================================
 #  PCA + Clustering
 # =======================================================
-with tabs[4]:
+with tabs[ 4 ]:
     cols = numeric_columns(df)
     if len(cols) < 2:
         st.warning('Need at least two numeric columns.')
@@ -420,10 +420,10 @@ with tabs[4]:
 			    
         st.markdown( BLUE_DIVIDER, unsafe_allow_html=True )
 
-# -------------------------------------------------------------------------------------------------
-# TAB 5 — Correlations
-# -------------------------------------------------------------------------------------------------
-with tabs[5]:
+# =======================================================
+#  Correlations
+# =======================================================
+with tabs[ 5 ]:
     cols = numeric_columns(df)
     if len(cols) < 2:
         st.warning('Need at least two numeric columns.')
@@ -450,10 +450,10 @@ with tabs[5]:
             fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
             st.pyplot(fig)
 
-# -------------------------------------------------------------------------------------------------
-# TAB 6 — Regression
-# -------------------------------------------------------------------------------------------------
-with tabs[6]:
+# =======================================================
+# Regression
+# =======================================================
+with tabs[ 6 ]:
     cols = numeric_columns(df)
     if len(cols) < 2:
         st.warning('Need numeric columns for regression.')
@@ -540,10 +540,10 @@ with tabs[6]:
                 ax.set_ylabel( 'Residual (Actual - Predicted)' )
                 st.pyplot( fig )
 
-# -------------------------------------------------------------------------------------------------
-# TAB 8 — Time Series
-# -------------------------------------------------------------------------------------------------
-with tabs[8]:
+# =======================================================
+# Time Series
+# =======================================================
+with tabs[ 8 ]:
     if not HAS_STATSMODELS:
         st.warning('statsmodels is not installed. Install it to enable time-series forecasting.')
     else:
@@ -574,9 +574,9 @@ with tabs[8]:
                 ax.legend(ncol=3, fontsize=8)
                 st.pyplot(fig)
 
-# -------------------------------------------------------------------------------------------------
+# =======================================================
 # TAB 9 — Export
-# -------------------------------------------------------------------------------------------------
+# =======================================================
 with tabs[9]:
     st.download_button( label='Download CSV',
         data=df.to_csv(index=False).encode('utf-8'),
