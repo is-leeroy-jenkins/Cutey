@@ -5,9 +5,6 @@ import io
 from pathlib import Path
 from typing import Optional, List, Dict
 
-# -------------------------------------------------------------------------------------------------
-# Third-party
-# -------------------------------------------------------------------------------------------------
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -149,7 +146,7 @@ def load_table( uploaded_file: io.BytesIO | None, uploaded_name: str | None,
     return pd.read_excel( FALLBACK_DATA_PATH, sheet_name=sheet_name )
 
 # =======================================================
-# Sidebar – data loading
+# Sidebar
 # =======================================================
 st.sidebar.header( 'Account-A Data' )
 
