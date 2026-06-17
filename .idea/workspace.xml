@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f719340-05d3-4eb4-a1ff-47d5ee62e08b" name="Changes" comment="update;">
-      <change afterPath="$PROJECT_DIR$/docs/assets/css/cutey.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/assets/js/cutey.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkdocs.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notebooks/balances.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/balances.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,6 +70,9 @@
       <recent name="C:\Users\terry\source\repos\Cutey\docs\assets" />
       <recent name="C:\Users\terry\source\repos\Cutey\docs" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\terry\source\repos\Cutey\notebooks" />
+    </key>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -87,7 +93,7 @@
       <workItem from="1775060664816" duration="989000" />
       <workItem from="1775065806703" duration="1335000" />
       <workItem from="1775475528358" duration="162000" />
-      <workItem from="1781657647808" duration="1807000" />
+      <workItem from="1781657647808" duration="3310000" />
     </task>
     <task id="LOCAL-00001" summary="update;">
       <option name="closed" value="true" />
@@ -161,7 +167,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781659213751</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="update;">
+      <option name="closed" value="true" />
+      <created>1781659523127</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1781659523127</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

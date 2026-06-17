@@ -1,0 +1,108 @@
+site_name: Cutey Documentation
+site_description: Documentation for Cutey, a Streamlit-based federal account balance analytics and projection application.
+site_author: Terry D. Eppler
+site_url: https://is-leeroy-jenkins.github.io/Cutey/
+
+repo_url: https://github.com/is-leeroy-jenkins/Cutey
+repo_name: is-leeroy-jenkins/Cutey
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - search.share
+    - search.suggest
+    - content.code.copy
+    - content.code.select
+    - content.tabs.link
+    - toc.follow
+  palette:
+    - scheme: slate
+      primary: blue
+      accent: blue
+  font:
+    text: Roboto
+    code: Roboto Mono
+  favicon: img/favicon.ico
+  logo: img/cutey-logo.png
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths:
+            - .
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            separate_signature: true
+            members_order: source
+            filters:
+              - "!^_"
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra_css:
+  - assets/css/cutey.css
+
+extra_javascript:
+  - assets/js/cutey.js
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Data Sources: data-sources.md
+  - User Guide:
+      - Overview: user-guide/index.md
+      - Installation: user-guide/installation.md
+      - Data Loading: user-guide/data-loading.md
+      - Data Overview: user-guide/data-overview.md
+      - Descriptive Statistics: user-guide/descriptive-statistics.md
+      - Distributions: user-guide/distributions.md
+      - Transformations: user-guide/transformations.md
+      - PCA & Clustering: user-guide/pca-clustering.md
+      - Correlations: user-guide/correlations.md
+      - Regression: user-guide/regression.md
+      - Inferential Statistics: user-guide/inferential-statistics.md
+      - Time Series: user-guide/time-series.md
+      - Export: user-guide/export.md
+  - API Reference:
+      - Overview: api/index.md
+      - Application: api/app.md
+  - Roadmap: roadmap.md
+  - Development: development.md

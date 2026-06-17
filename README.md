@@ -1,10 +1,10 @@
 ###### Cutey
 ![](https://github.com/is-leeroy-jenkins/Cutey/blob/main/resources/assets/img/git/Cutey.png)
+___
 
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-0078FC?style=for-the-badge&logo=github)](https://is-leeroy-jenkins.github.io/Cutey/)
 
-
--  A machine-learning toolkit for federal budget execution & accounting implemented in Python. Built using `Scikit`, `TensorFlow`, and `PyTorch`, the notebook integrates structured budget execution data—such as SF-133 reports from OMB and agency-specific datasets from Data.gov—to inform predictive models across multiple federal financial scenarios.
-
+A machine-learning toolkit for federal budget execution & accounting implemented in Python. Built using `Scikit`, `TensorFlow`, and `PyTorch`, the notebook integrates structured budget execution data—such as SF-133 reports from OMB and agency-specific datasets from Data.gov—to inform predictive models across multiple federal financial scenarios.
 
 ## 🎥 Demo
 
