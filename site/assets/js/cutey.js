@@ -36,10 +36,9 @@
  *      cookies, and local storage values that contain user content.
  * ==========================================================================================
  */
-
-(function () {
+( function()
+{
 	"use strict";
-
 	const CuteyDocs = {
 		config: {
 			scrollTopId: "cutey-scroll-top",
@@ -60,22 +59,21 @@
 			tableSelector: ".md-typeset table:not([data-cutey-no-filter])",
 			codeSelector: ".md-typeset pre > code",
 			apiObjectSelector:
-				".doc.doc-object, .doc-class, .doc-function, .doc-method, .doc-attribute, .doc-property"
+					".doc.doc-object, .doc-class, .doc-function, .doc-method, .doc-attribute, .doc-property"
 		},
-
 		state: {
 			pageReady: false,
 			scrollTicking: false,
 			resizeTicking: false
 		},
-
-		init: function () {
-			if (document.documentElement.getAttribute(this.config.initializedAttribute) === "true") {
+		init: function()
+		{
+			if( document.documentElement.getAttribute( this.config.initializedAttribute ) ===
+					"true" )
+			{
 				return;
 			}
-
-			document.documentElement.setAttribute(this.config.initializedAttribute, "true");
-
+			document.documentElement.setAttribute( this.config.initializedAttribute, "true" );
 			this.enhanceExternalLinks();
 			this.customizeSearch();
 			this.addReadingProgress();
@@ -93,504 +91,498 @@
 			this.enhanceTocProgress();
 			this.addMermaidGuard();
 			this.bindLifecycleEvents();
-
 			this.state.pageReady = true;
 			this.updateReadingProgress();
 			this.updateScrollTopVisibility();
 			this.updateTocProgress();
 		},
-
-		bindLifecycleEvents: function () {
+		bindLifecycleEvents: function()
+		{
 			const self = this;
-
-			window.addEventListener("scroll", function () {
-				if (!self.state.scrollTicking) {
-					window.requestAnimationFrame(function () {
+			window.addEventListener( "scroll", function()
+			{
+				if( !self.state.scrollTicking )
+				{
+					window.requestAnimationFrame( function()
+					{
 						self.updateReadingProgress();
 						self.updateScrollTopVisibility();
 						self.updateTocProgress();
 						self.state.scrollTicking = false;
-					});
-
+					} );
 					self.state.scrollTicking = true;
 				}
-			}, { passive: true });
-
-			window.addEventListener("resize", function () {
-				if (!self.state.resizeTicking) {
-					window.requestAnimationFrame(function () {
+			}, { passive: true } );
+			window.addEventListener( "resize", function()
+			{
+				if( !self.state.resizeTicking )
+				{
+					window.requestAnimationFrame( function()
+					{
 						self.updateReadingProgress();
 						self.updateTocProgress();
 						self.state.resizeTicking = false;
-					});
-
+					} );
 					self.state.resizeTicking = true;
 				}
-			}, { passive: true });
-
-			document.addEventListener("click", function (event) {
-				self.handleDocumentClick(event);
-			});
-
-			document.addEventListener("keydown", function (event) {
-				self.handleKeyboardShortcuts(event);
-			});
-
-			window.addEventListener("beforeunload", function () {
+			}, { passive: true } );
+			document.addEventListener( "click", function( event )
+			{
+				self.handleDocumentClick( event );
+			} );
+			document.addEventListener( "keydown", function( event )
+			{
+				self.handleKeyboardShortcuts( event );
+			} );
+			window.addEventListener( "beforeunload", function()
+			{
 				self.saveNavigationScroll();
-			});
-
-			if (typeof document$ !== "undefined" && document$ && typeof document$.subscribe === "function") {
-				document$.subscribe(function () {
-					document.documentElement.removeAttribute(self.config.initializedAttribute);
-
-					setTimeout(function () {
+			} );
+			if( typeof document$ !== "undefined" && document$ && typeof document$.subscribe ===
+					"function" )
+			{
+				document$.subscribe( function()
+				{
+					document.documentElement.removeAttribute( self.config.initializedAttribute );
+					setTimeout( function()
+					{
 						self.init();
-					}, 25);
-				});
+					}, 25 );
+				} );
 			}
 		},
-
-		handleDocumentClick: function (event) {
+		handleDocumentClick: function( event )
+		{
 			const target = event.target;
-
-			if (!target) {
+			if( !target )
+			{
 				return;
 			}
-
-			if (target.closest && target.closest("#" + this.config.scrollTopId)) {
+			if( target.closest && target.closest( "#" + this.config.scrollTopId ) )
+			{
 				event.preventDefault();
 				this.scrollToTop();
 				return;
 			}
-
-			if (target.closest && target.closest("[data-cutey-copy-heading]")) {
+			if( target.closest && target.closest( "[data-cutey-copy-heading]" ) )
+			{
 				event.preventDefault();
-				this.copyHeadingLink(target.closest("[data-cutey-copy-heading]"));
+				this.copyHeadingLink( target.closest( "[data-cutey-copy-heading]" ) );
 				return;
 			}
-
-			if (target.closest && target.closest("[data-cutey-copy-page]")) {
+			if( target.closest && target.closest( "[data-cutey-copy-page]" ) )
+			{
 				event.preventDefault();
-				this.copyPageLink(target.closest("[data-cutey-copy-page]"));
+				this.copyPageLink( target.closest( "[data-cutey-copy-page]" ) );
 				return;
 			}
-
-			if (target.closest && target.closest("[data-cutey-print-page]")) {
+			if( target.closest && target.closest( "[data-cutey-print-page]" ) )
+			{
 				event.preventDefault();
 				window.print();
 				return;
 			}
-
-			if (target.closest && target.closest("[data-cutey-toggle-code]")) {
+			if( target.closest && target.closest( "[data-cutey-toggle-code]" ) )
+			{
 				event.preventDefault();
-				this.toggleCodeBlock(target.closest("[data-cutey-toggle-code]"));
+				this.toggleCodeBlock( target.closest( "[data-cutey-toggle-code]" ) );
 				return;
 			}
-
-			if (target.closest && target.closest("[data-cutey-api-expand]")) {
+			if( target.closest && target.closest( "[data-cutey-api-expand]" ) )
+			{
 				event.preventDefault();
-				this.setApiDetailsState(true);
+				this.setApiDetailsState( true );
 				return;
 			}
-
-			if (target.closest && target.closest("[data-cutey-api-collapse]")) {
+			if( target.closest && target.closest( "[data-cutey-api-collapse]" ) )
+			{
 				event.preventDefault();
-				this.setApiDetailsState(false);
+				this.setApiDetailsState( false );
 				return;
 			}
-
-			if (target.closest && target.closest("[data-cutey-api-clear]")) {
+			if( target.closest && target.closest( "[data-cutey-api-clear]" ) )
+			{
 				event.preventDefault();
 				this.clearApiFilter();
 			}
 		},
-
-		handleKeyboardShortcuts: function (event) {
-			const key = (event.key || "").toLowerCase();
-
-			if (event.altKey && key === "t") {
+		handleKeyboardShortcuts: function( event )
+		{
+			const key = ( event.key || "" ).toLowerCase();
+			if( event.altKey && key === "t" )
+			{
 				event.preventDefault();
 				this.scrollToTop();
 			}
-
-			if (event.altKey && key === "p") {
+			if( event.altKey && key === "p" )
+			{
 				event.preventDefault();
 				window.print();
 			}
-
-			if (event.altKey && key === "l") {
+			if( event.altKey && key === "l" )
+			{
 				event.preventDefault();
 				this.copyCurrentPageToClipboard();
 			}
-
-			if (event.altKey && key === "f") {
-				const apiSearch = document.getElementById("cutey-api-search");
-
-				if (apiSearch) {
+			if( event.altKey && key === "f" )
+			{
+				const apiSearch = document.getElementById( "cutey-api-search" );
+				if( apiSearch )
+				{
 					event.preventDefault();
 					apiSearch.focus();
 				}
 			}
 		},
-
-		enhanceExternalLinks: function () {
-			const links = document.querySelectorAll(".md-typeset a[href]");
+		enhanceExternalLinks: function()
+		{
+			const links = document.querySelectorAll( ".md-typeset a[href]" );
 			const currentHost = window.location.host;
-
-			links.forEach(function (link) {
-				try {
-					const url = new URL(link.href, window.location.href);
-
-					if (url.host && url.host !== currentHost) {
-						link.setAttribute("target", "_blank");
-						link.setAttribute("rel", "noopener noreferrer");
-						link.classList.add("cutey-external-link");
-
-						if (!link.querySelector(".cutey-external-indicator")) {
-							const indicator = document.createElement("span");
+			links.forEach( function( link )
+			{
+				try
+				{
+					const url = new URL( link.href, window.location.href );
+					if( url.host && url.host !== currentHost )
+					{
+						link.setAttribute( "target", "_blank" );
+						link.setAttribute( "rel", "noopener noreferrer" );
+						link.classList.add( "cutey-external-link" );
+						if( !link.querySelector( ".cutey-external-indicator" ) )
+						{
+							const indicator = document.createElement( "span" );
 							indicator.className = "cutey-external-indicator";
-							indicator.setAttribute("aria-hidden", "true");
+							indicator.setAttribute( "aria-hidden", "true" );
 							indicator.textContent = " ↗";
-							link.appendChild(indicator);
+							link.appendChild( indicator );
 						}
 					}
-				} catch (error) {
+				}
+				catch( error )
+				{
 					return;
 				}
-			});
+			} );
 		},
-
-		customizeSearch: function () {
-			const searchInputs = document.querySelectorAll("input.md-search__input");
-
-			searchInputs.forEach(function (input) {
-				input.setAttribute("placeholder", "Search Cutey docs...");
-				input.setAttribute("aria-label", "Search Cutey documentation");
-			});
+		customizeSearch: function()
+		{
+			const searchInputs = document.querySelectorAll( "input.md-search__input" );
+			searchInputs.forEach( function( input )
+			{
+				input.setAttribute( "placeholder", "Search Cutey docs..." );
+				input.setAttribute( "aria-label", "Search Cutey documentation" );
+			} );
 		},
-
-		addReadingProgress: function () {
-			if (document.getElementById(this.config.progressId)) {
+		addReadingProgress: function()
+		{
+			if( document.getElementById( this.config.progressId ) )
+			{
 				return;
 			}
-
-			const progress = document.createElement("div");
+			const progress = document.createElement( "div" );
 			progress.id = this.config.progressId;
-			progress.setAttribute("aria-hidden", "true");
+			progress.setAttribute( "aria-hidden", "true" );
 			progress.innerHTML = "<span></span>";
-
-			document.body.appendChild(progress);
+			document.body.appendChild( progress );
 		},
-
-		updateReadingProgress: function () {
-			const progress = document.querySelector("#" + this.config.progressId + " span");
-
-			if (!progress) {
+		updateReadingProgress: function()
+		{
+			const progress = document.querySelector( "#" + this.config.progressId + " span" );
+			if( !progress )
+			{
 				return;
 			}
-
-			const content = document.querySelector(this.config.contentSelector);
+			const content = document.querySelector( this.config.contentSelector );
 			const scrollTop = window.scrollY || document.documentElement.scrollTop;
 			let maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-
-			if (content) {
+			if( content )
+			{
 				const rect = content.getBoundingClientRect();
 				const contentTop = rect.top + scrollTop;
-				const contentHeight = Math.max(content.offsetHeight, 1);
-				const contentScroll = Math.min(Math.max(scrollTop - contentTop, 0), contentHeight);
-				const percent = Math.min(Math.max(contentScroll / contentHeight, 0), 1);
-
-				progress.style.width = (percent * 100).toFixed(2) + "%";
+				const contentHeight = Math.max( content.offsetHeight, 1 );
+				const contentScroll = Math.min( Math.max( scrollTop - contentTop, 0 ),
+						contentHeight );
+				const percent = Math.min( Math.max( contentScroll / contentHeight, 0 ), 1 );
+				progress.style.width = ( percent * 100 ).toFixed( 2 ) + "%";
 				return;
 			}
-
-			if (maxScroll <= 0) {
+			if( maxScroll <= 0 )
+			{
 				maxScroll = 1;
 			}
-
-			progress.style.width = Math.min(Math.max((scrollTop / maxScroll) * 100, 0), 100).toFixed(2) + "%";
+			progress.style.width =
+					Math.min( Math.max( ( scrollTop / maxScroll ) * 100, 0 ), 100 ).toFixed( 2 ) +
+					"%";
 		},
-
-		addScrollTopButton: function () {
-			if (document.getElementById(this.config.scrollTopId)) {
+		addScrollTopButton: function()
+		{
+			if( document.getElementById( this.config.scrollTopId ) )
+			{
 				return;
 			}
-
-			const button = document.createElement("button");
+			const button = document.createElement( "button" );
 			button.id = this.config.scrollTopId;
 			button.type = "button";
 			button.className = "cutey-scroll-top";
-			button.setAttribute("aria-label", "Scroll to top");
-			button.setAttribute("title", "Scroll to top (Alt+T)");
+			button.setAttribute( "aria-label", "Scroll to top" );
+			button.setAttribute( "title", "Scroll to top (Alt+T)" );
 			button.innerHTML = "↑";
-
-			document.body.appendChild(button);
+			document.body.appendChild( button );
 		},
-
-		updateScrollTopVisibility: function () {
-			const button = document.getElementById(this.config.scrollTopId);
-
-			if (!button) {
+		updateScrollTopVisibility: function()
+		{
+			const button = document.getElementById( this.config.scrollTopId );
+			if( !button )
+			{
 				return;
 			}
-
-			if ((window.scrollY || document.documentElement.scrollTop) > 420) {
-				button.classList.add("is-visible");
-			} else {
-				button.classList.remove("is-visible");
+			if( ( window.scrollY || document.documentElement.scrollTop ) > 420 )
+			{
+				button.classList.add( "is-visible" );
+			}
+			else
+			{
+				button.classList.remove( "is-visible" );
 			}
 		},
-
-		scrollToTop: function () {
-			window.scrollTo({
+		scrollToTop: function()
+		{
+			window.scrollTo( {
 				top: 0,
 				behavior: "smooth"
-			});
+			} );
 		},
-
-		addPageTools: function () {
-			if (document.getElementById(this.config.pageToolsId)) {
+		addPageTools: function()
+		{
+			if( document.getElementById( this.config.pageToolsId ) )
+			{
 				return;
 			}
-
-			const content = document.querySelector(this.config.contentSelector);
-
-			if (!content) {
+			const content = document.querySelector( this.config.contentSelector );
+			if( !content )
+			{
 				return;
 			}
-
-			const title = content.querySelector("h1");
-
-			if (!title) {
+			const title = content.querySelector( "h1" );
+			if( !title )
+			{
 				return;
 			}
-
-			const tools = document.createElement("div");
+			const tools = document.createElement( "div" );
 			tools.id = this.config.pageToolsId;
 			tools.className = "cutey-page-tools";
 			tools.innerHTML = [
 				"<button type=\"button\" data-cutey-copy-page title=\"Copy page link\" aria-label=\"Copy page link\">Copy link</button>",
 				"<button type=\"button\" data-cutey-print-page title=\"Print page\" aria-label=\"Print page\">Print</button>"
-			].join("");
-
-			title.insertAdjacentElement("afterend", tools);
+			].join( "" );
+			title.insertAdjacentElement( "afterend", tools );
 		},
-
-		copyPageLink: function (button) {
-			this.copyTextToClipboard(window.location.href, button, "Copied", "Copy link");
+		copyPageLink: function( button )
+		{
+			this.copyTextToClipboard( window.location.href, button, "Copied", "Copy link" );
 		},
-
-		copyCurrentPageToClipboard: function () {
-			const button = document.querySelector("[data-cutey-copy-page]");
-			this.copyTextToClipboard(window.location.href, button, "Copied", "Copy link");
+		copyCurrentPageToClipboard: function()
+		{
+			const button = document.querySelector( "[data-cutey-copy-page]" );
+			this.copyTextToClipboard( window.location.href, button, "Copied", "Copy link" );
 		},
-
-		addHeadingLinks: function () {
-			const headings = document.querySelectorAll(this.config.headingSelector);
-
-			headings.forEach(function (heading) {
-				if (heading.querySelector("." + CuteyDocs.config.headingLinkClass)) {
+		addHeadingLinks: function()
+		{
+			const headings = document.querySelectorAll( this.config.headingSelector );
+			headings.forEach( function( heading )
+			{
+				if( heading.querySelector( "." + CuteyDocs.config.headingLinkClass ) )
+				{
 					return;
 				}
-
-				const button = document.createElement("button");
+				const button = document.createElement( "button" );
 				button.type = "button";
 				button.className = CuteyDocs.config.headingLinkClass;
-				button.setAttribute("data-cutey-copy-heading", heading.id);
-				button.setAttribute("aria-label", "Copy link to " + heading.textContent.trim());
-				button.setAttribute("title", "Copy section link");
+				button.setAttribute( "data-cutey-copy-heading", heading.id );
+				button.setAttribute( "aria-label", "Copy link to " + heading.textContent.trim() );
+				button.setAttribute( "title", "Copy section link" );
 				button.textContent = "§";
-
-				heading.appendChild(button);
-			});
+				heading.appendChild( button );
+			} );
 		},
-
-		copyHeadingLink: function (button) {
-			const id = button.getAttribute("data-cutey-copy-heading");
-
-			if (!id) {
+		copyHeadingLink: function( button )
+		{
+			const id = button.getAttribute( "data-cutey-copy-heading" );
+			if( !id )
+			{
 				return;
 			}
-
-			const url = window.location.origin + window.location.pathname + window.location.search + "#" + encodeURIComponent(id);
-			this.copyTextToClipboard(url, button, "Copied", "§");
+			const url = window.location.origin + window.location.pathname + window.location.search +
+					"#" + encodeURIComponent( id );
+			this.copyTextToClipboard( url, button, "Copied", "§" );
 		},
-
-		copyTextToClipboard: function (text, button, successText, defaultText) {
-			const updateButton = function () {
-				if (!button) {
+		copyTextToClipboard: function( text, button, successText, defaultText )
+		{
+			const updateButton = function()
+			{
+				if( !button )
+				{
 					return;
 				}
-
 				const previous = button.textContent;
 				button.textContent = successText || "Copied";
-
-				setTimeout(function () {
+				setTimeout( function()
+				{
 					button.textContent = defaultText || previous;
-				}, 1400);
+				}, 1400 );
 			};
-
-			if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
-				navigator.clipboard.writeText(text).then(updateButton).catch(function () {
-					CuteyDocs.fallbackCopyText(text);
+			if( navigator.clipboard && typeof navigator.clipboard.writeText === "function" )
+			{
+				navigator.clipboard.writeText( text ).then( updateButton ).catch( function()
+				{
+					CuteyDocs.fallbackCopyText( text );
 					updateButton();
-				});
-
+				} );
 				return;
 			}
-
-			this.fallbackCopyText(text);
+			this.fallbackCopyText( text );
 			updateButton();
 		},
-
-		fallbackCopyText: function (text) {
-			const textarea = document.createElement("textarea");
+		fallbackCopyText: function( text )
+		{
+			const textarea = document.createElement( "textarea" );
 			textarea.value = text;
-			textarea.setAttribute("readonly", "readonly");
+			textarea.setAttribute( "readonly", "readonly" );
 			textarea.style.position = "fixed";
 			textarea.style.top = "-9999px";
 			textarea.style.left = "-9999px";
-
-			document.body.appendChild(textarea);
+			document.body.appendChild( textarea );
 			textarea.select();
-
-			try {
-				document.execCommand("copy");
-			} catch (error) {
+			try
+			{
+				document.execCommand( "copy" );
+			}
+			catch( error )
+			{
 				return;
-			} finally {
-				document.body.removeChild(textarea);
+			}
+			finally
+			{
+				document.body.removeChild( textarea );
 			}
 		},
-
-		addTableFilters: function () {
-			const tables = document.querySelectorAll(this.config.tableSelector);
-
-			tables.forEach(function (table, index) {
-				if (table.getAttribute("data-cutey-filtered") === "true") {
+		addTableFilters: function()
+		{
+			const tables = document.querySelectorAll( this.config.tableSelector );
+			tables.forEach( function( table, index )
+			{
+				if( table.getAttribute( "data-cutey-filtered" ) === "true" )
+				{
 					return;
 				}
-
-				const tbody = table.querySelector("tbody");
-
-				if (!tbody) {
+				const tbody = table.querySelector( "tbody" );
+				if( !tbody )
+				{
 					return;
 				}
-
-				const rows = Array.prototype.slice.call(tbody.querySelectorAll("tr"));
-
-				if (rows.length < CuteyDocs.config.largeTableMinimumRows) {
+				const rows = Array.prototype.slice.call( tbody.querySelectorAll( "tr" ) );
+				if( rows.length < CuteyDocs.config.largeTableMinimumRows )
+				{
 					return;
 				}
-
-				table.setAttribute("data-cutey-filtered", "true");
-
-				const wrapper = document.createElement("div");
+				table.setAttribute( "data-cutey-filtered", "true" );
+				const wrapper = document.createElement( "div" );
 				wrapper.className = "cutey-table-tools";
-
-				const input = document.createElement("input");
+				const input = document.createElement( "input" );
 				input.type = "search";
 				input.className = CuteyDocs.config.tableFilterClass;
 				input.placeholder = "Filter table...";
-				input.setAttribute("aria-label", "Filter table " + (index + 1));
-
-				const count = document.createElement("span");
+				input.setAttribute( "aria-label", "Filter table " + ( index + 1 ) );
+				const count = document.createElement( "span" );
 				count.className = "cutey-table-count";
 				count.textContent = rows.length + " rows";
-
-				wrapper.appendChild(input);
-				wrapper.appendChild(count);
-
-				table.parentNode.insertBefore(wrapper, table);
-
-				input.addEventListener("input", function () {
-					CuteyDocs.filterTable(table, input.value, count);
-				});
-			});
+				wrapper.appendChild( input );
+				wrapper.appendChild( count );
+				table.parentNode.insertBefore( wrapper, table );
+				input.addEventListener( "input", function()
+				{
+					CuteyDocs.filterTable( table, input.value, count );
+				} );
+			} );
 		},
-
-		filterTable: function (table, query, countElement) {
-			const normalizedQuery = (query || "").toLowerCase().trim();
-			const rows = Array.prototype.slice.call(table.querySelectorAll("tbody tr"));
+		filterTable: function( table, query, countElement )
+		{
+			const normalizedQuery = ( query || "" ).toLowerCase().trim();
+			const rows = Array.prototype.slice.call( table.querySelectorAll( "tbody tr" ) );
 			let visible = 0;
-
-			rows.forEach(function (row) {
+			rows.forEach( function( row )
+			{
 				const text = row.textContent.toLowerCase();
-
-				if (!normalizedQuery || text.indexOf(normalizedQuery) !== -1) {
+				if( !normalizedQuery || text.indexOf( normalizedQuery ) !== -1 )
+				{
 					row.style.display = "";
 					visible += 1;
-				} else {
+				}
+				else
+				{
 					row.style.display = "none";
 				}
-			});
-
-			if (countElement) {
+			} );
+			if( countElement )
+			{
 				countElement.textContent = visible + " / " + rows.length + " rows";
 			}
 		},
-
-		addCodeLabels: function () {
-			const codeBlocks = document.querySelectorAll(this.config.codeSelector);
-
-			codeBlocks.forEach(function (code) {
+		addCodeLabels: function()
+		{
+			const codeBlocks = document.querySelectorAll( this.config.codeSelector );
+			codeBlocks.forEach( function( code )
+			{
 				const pre = code.parentElement;
-
-				if (!pre || pre.getAttribute("data-cutey-labeled") === "true") {
+				if( !pre || pre.getAttribute( "data-cutey-labeled" ) === "true" )
+				{
 					return;
 				}
-
-				const language = CuteyDocs.detectCodeLanguage(code);
-
-				if (!language) {
+				const language = CuteyDocs.detectCodeLanguage( code );
+				if( !language )
+				{
 					return;
 				}
-
-				pre.setAttribute("data-cutey-labeled", "true");
-
-				const label = document.createElement("div");
+				pre.setAttribute( "data-cutey-labeled", "true" );
+				const label = document.createElement( "div" );
 				label.className = CuteyDocs.config.codeLabelClass;
 				label.textContent = language;
-
-				pre.insertAdjacentElement("beforebegin", label);
-			});
+				pre.insertAdjacentElement( "beforebegin", label );
+			} );
 		},
-
-		detectCodeLanguage: function (code) {
+		detectCodeLanguage: function( code )
+		{
 			const className = code.className || "";
-			const match = className.match(/language-([a-zA-Z0-9_+-]+)/);
-
-			if (match && match[1]) {
-				return this.formatLanguageName(match[1]);
+			const match = className.match( /language-([a-zA-Z0-9_+-]+)/ );
+			if( match && match[ 1 ] )
+			{
+				return this.formatLanguageName( match[ 1 ] );
 			}
-
 			const text = code.textContent.trim();
-
-			if (/^site_name:|^theme:|^plugins:|^nav:/m.test(text)) {
+			if( /^site_name:|^theme:|^plugins:|^nav:/m.test( text ) )
+			{
 				return "YAML";
 			}
-
-			if (/def\s+\w+\(|class\s+\w+/.test(text)) {
+			if( /def\s+\w+\(|class\s+\w+/.test( text ) )
+			{
 				return "Python";
 			}
-
-			if (/^mkdocs\s|^python\s|-m\s+/.test(text)) {
+			if( /^mkdocs\s|^python\s|-m\s+/.test( text ) )
+			{
 				return "Shell";
 			}
-
-			if (/^\{[\s\S]*\}$/.test(text)) {
+			if( /^\{[\s\S]*\}$/.test( text ) )
+			{
 				return "JSON";
 			}
-
-			if (/^#\s|^##\s|```/.test(text)) {
+			if( /^#\s|^##\s|```/.test( text ) )
+			{
 				return "Markdown";
 			}
-
 			return "";
 		},
-
-		formatLanguageName: function (language) {
+		formatLanguageName: function( language )
+		{
 			const map = {
 				py: "Python",
 				python: "Python",
@@ -609,203 +601,204 @@
 				js: "JavaScript",
 				javascript: "JavaScript"
 			};
-
-			const key = String(language || "").toLowerCase();
-
-			return map[key] || key.toUpperCase();
+			const key = String( language || "" ).toLowerCase();
+			return map[ key ] || key.toUpperCase();
 		},
-
-		addCodeToggles: function () {
-			const codeBlocks = document.querySelectorAll(this.config.codeSelector);
-
-			codeBlocks.forEach(function (code) {
+		addCodeToggles: function()
+		{
+			const codeBlocks = document.querySelectorAll( this.config.codeSelector );
+			codeBlocks.forEach( function( code )
+			{
 				const pre = code.parentElement;
-
-				if (!pre || pre.getAttribute("data-cutey-toggle-ready") === "true") {
+				if( !pre || pre.getAttribute( "data-cutey-toggle-ready" ) === "true" )
+				{
 					return;
 				}
-
-				pre.setAttribute("data-cutey-toggle-ready", "true");
-
-				if (pre.scrollHeight <= CuteyDocs.config.maxCollapsedCodeHeight + 80) {
+				pre.setAttribute( "data-cutey-toggle-ready", "true" );
+				if( pre.scrollHeight <= CuteyDocs.config.maxCollapsedCodeHeight + 80 )
+				{
 					return;
 				}
-
-				pre.classList.add("cutey-code-collapsed");
+				pre.classList.add( "cutey-code-collapsed" );
 				pre.style.maxHeight = CuteyDocs.config.maxCollapsedCodeHeight + "px";
-
-				const button = document.createElement("button");
+				const button = document.createElement( "button" );
 				button.type = "button";
 				button.className = CuteyDocs.config.codeToggleClass;
-				button.setAttribute("data-cutey-toggle-code", "collapsed");
+				button.setAttribute( "data-cutey-toggle-code", "collapsed" );
 				button.textContent = "Show full code";
-
-				pre.insertAdjacentElement("afterend", button);
-			});
+				pre.insertAdjacentElement( "afterend", button );
+			} );
 		},
-
-		toggleCodeBlock: function (button) {
+		toggleCodeBlock: function( button )
+		{
 			const pre = button.previousElementSibling;
-
-			if (!pre || pre.tagName.toLowerCase() !== "pre") {
+			if( !pre || pre.tagName.toLowerCase() !== "pre" )
+			{
 				return;
 			}
-
-			const state = button.getAttribute("data-cutey-toggle-code");
-
-			if (state === "collapsed") {
-				pre.classList.remove("cutey-code-collapsed");
+			const state = button.getAttribute( "data-cutey-toggle-code" );
+			if( state === "collapsed" )
+			{
+				pre.classList.remove( "cutey-code-collapsed" );
 				pre.style.maxHeight = "";
-				button.setAttribute("data-cutey-toggle-code", "expanded");
+				button.setAttribute( "data-cutey-toggle-code", "expanded" );
 				button.textContent = "Collapse code";
-			} else {
-				pre.classList.add("cutey-code-collapsed");
+			}
+			else
+			{
+				pre.classList.add( "cutey-code-collapsed" );
 				pre.style.maxHeight = this.config.maxCollapsedCodeHeight + "px";
-				button.setAttribute("data-cutey-toggle-code", "collapsed");
+				button.setAttribute( "data-cutey-toggle-code", "collapsed" );
 				button.textContent = "Show full code";
 			}
 		},
-
-		addPagePathMetadata: function () {
-			const content = document.querySelector(this.config.contentSelector);
-
-			if (!content || content.querySelector(".cutey-page-path")) {
+		addPagePathMetadata: function()
+		{
+			const content = document.querySelector( this.config.contentSelector );
+			if( !content || content.querySelector( ".cutey-page-path" ) )
+			{
 				return;
 			}
-
-			const h1 = content.querySelector("h1");
-
-			if (!h1) {
+			const h1 = content.querySelector( "h1" );
+			if( !h1 )
+			{
 				return;
 			}
-
 			const path = window.location.pathname
-				.replace(/\/$/, "")
-				.split("/")
-				.filter(Boolean)
-				.slice(-4)
-				.join(" / ");
-
-			if (!path) {
+					.replace( /\/$/, "" )
+					.split( "/" )
+					.filter( Boolean )
+					.slice( -4 )
+					.join( " / " );
+			if( !path )
+			{
 				return;
 			}
-
-			const meta = document.createElement("div");
+			const meta = document.createElement( "div" );
 			meta.className = "cutey-page-path";
 			meta.textContent = "Docs path: " + path;
-
-			h1.insertAdjacentElement("afterend", meta);
+			h1.insertAdjacentElement( "afterend", meta );
 		},
-
-		saveNavigationScroll: function () {
-			const nav = document.querySelector(this.config.navSelector);
-
-			if (!nav) {
+		saveNavigationScroll: function()
+		{
+			const nav = document.querySelector( this.config.navSelector );
+			if( !nav )
+			{
 				return;
 			}
-
-			try {
-				window.sessionStorage.setItem(this.config.navScrollKey, String(nav.scrollTop || 0));
-			} catch (error) {
+			try
+			{
+				window.sessionStorage.setItem( this.config.navScrollKey,
+						String( nav.scrollTop || 0 ) );
+			}
+			catch( error )
+			{
 				return;
 			}
 		},
-
-		restoreNavigationScroll: function () {
-			const nav = document.querySelector(this.config.navSelector);
-
-			if (!nav) {
+		restoreNavigationScroll: function()
+		{
+			const nav = document.querySelector( this.config.navSelector );
+			if( !nav )
+			{
 				return;
 			}
-
-			try {
-				const value = window.sessionStorage.getItem(this.config.navScrollKey);
-
-				if (value !== null) {
-					nav.scrollTop = parseInt(value, 10) || 0;
+			try
+			{
+				const value = window.sessionStorage.getItem( this.config.navScrollKey );
+				if( value !== null )
+				{
+					nav.scrollTop = parseInt( value, 10 ) || 0;
 				}
-			} catch (error) {
+			}
+			catch( error )
+			{
 				return;
 			}
 		},
-
-		enhanceKeyboardFocus: function () {
-			document.body.addEventListener("keydown", function (event) {
-				if (event.key === "Tab") {
-					document.body.classList.add("cutey-keyboard-mode");
+		enhanceKeyboardFocus: function()
+		{
+			document.body.addEventListener( "keydown", function( event )
+			{
+				if( event.key === "Tab" )
+				{
+					document.body.classList.add( "cutey-keyboard-mode" );
 				}
-			});
-
-			document.body.addEventListener("mousedown", function () {
-				document.body.classList.remove("cutey-keyboard-mode");
-			});
+			} );
+			document.body.addEventListener( "mousedown", function()
+			{
+				document.body.classList.remove( "cutey-keyboard-mode" );
+			} );
 		},
-
-		enhanceApiReference: function () {
-			const apiContainers = document.querySelectorAll(this.config.apiObjectSelector);
-
-			apiContainers.forEach(function (container) {
-				if (container.getAttribute("data-cutey-api-enhanced") === "true") {
+		enhanceApiReference: function()
+		{
+			const apiContainers = document.querySelectorAll( this.config.apiObjectSelector );
+			apiContainers.forEach( function( container )
+			{
+				if( container.getAttribute( "data-cutey-api-enhanced" ) === "true" )
+				{
 					return;
 				}
-
-				container.setAttribute("data-cutey-api-enhanced", "true");
-
-				const heading = container.querySelector("h2, h3, h4, h5");
-
-				if (!heading || heading.querySelector(".cutey-api-badge")) {
+				container.setAttribute( "data-cutey-api-enhanced", "true" );
+				const heading = container.querySelector( "h2, h3, h4, h5" );
+				if( !heading || heading.querySelector( ".cutey-api-badge" ) )
+				{
 					return;
 				}
-
-				const badge = document.createElement("span");
+				const badge = document.createElement( "span" );
 				badge.className = "cutey-api-badge";
-
-				if (container.className.indexOf("doc-class") !== -1) {
+				if( container.className.indexOf( "doc-class" ) !== -1 )
+				{
 					badge.textContent = "class";
-				} else if (container.className.indexOf("doc-method") !== -1) {
+				}
+				else if( container.className.indexOf( "doc-method" ) !== -1 )
+				{
 					badge.textContent = "method";
-				} else if (container.className.indexOf("doc-function") !== -1) {
+				}
+				else if( container.className.indexOf( "doc-function" ) !== -1 )
+				{
 					badge.textContent = "function";
-				} else if (container.className.indexOf("doc-attribute") !== -1) {
+				}
+				else if( container.className.indexOf( "doc-attribute" ) !== -1 )
+				{
 					badge.textContent = "attribute";
-				} else if (container.className.indexOf("doc-property") !== -1) {
+				}
+				else if( container.className.indexOf( "doc-property" ) !== -1 )
+				{
 					badge.textContent = "property";
-				} else {
+				}
+				else
+				{
 					badge.textContent = "api";
 				}
-
-				heading.appendChild(badge);
-			});
+				heading.appendChild( badge );
+			} );
 		},
-
-		addApiTools: function () {
-			const content = document.querySelector(this.config.contentSelector);
-
-			if (!content) {
+		addApiTools: function()
+		{
+			const content = document.querySelector( this.config.contentSelector );
+			if( !content )
+			{
 				return;
 			}
-
-			if (content.querySelector(".cutey-api-tools")) {
+			if( content.querySelector( ".cutey-api-tools" ) )
+			{
 				return;
 			}
-
-			const apiObjects = content.querySelectorAll(this.config.apiObjectSelector);
-			const detailsBlocks = content.querySelectorAll("details");
-
-			if (apiObjects.length === 0 && detailsBlocks.length === 0) {
+			const apiObjects = content.querySelectorAll( this.config.apiObjectSelector );
+			const detailsBlocks = content.querySelectorAll( "details" );
+			if( apiObjects.length === 0 && detailsBlocks.length === 0 )
+			{
 				return;
 			}
-
-			const firstHeading = content.querySelector("h1");
-
-			if (!firstHeading) {
+			const firstHeading = content.querySelector( "h1" );
+			if( !firstHeading )
+			{
 				return;
 			}
-
-			const panel = document.createElement("section");
+			const panel = document.createElement( "section" );
 			panel.className = "cutey-api-tools";
-			panel.setAttribute("aria-label", "API tools");
-
+			panel.setAttribute( "aria-label", "API tools" );
 			panel.innerHTML = [
 				"<h2 class=\"cutey-api-tools-title\">API Tools</h2>",
 				"<label class=\"cutey-api-search-label\" for=\"cutey-api-search\">Filter classes, methods, properties, or text</label>",
@@ -816,147 +809,155 @@
 				"<button type=\"button\" class=\"cutey-api-tool-button\" data-cutey-api-clear>Clear filter</button>",
 				"</div>",
 				"<p class=\"cutey-api-filter-status\" aria-live=\"polite\"></p>"
-			].join("");
-
-			firstHeading.insertAdjacentElement("afterend", panel);
-
-			const input = panel.querySelector("#cutey-api-search");
-			const status = panel.querySelector(".cutey-api-filter-status");
-
-			if (input) {
-				input.addEventListener("input", function () {
-					CuteyDocs.filterApiObjects(input.value, status);
-				});
+			].join( "" );
+			firstHeading.insertAdjacentElement( "afterend", panel );
+			const input = panel.querySelector( "#cutey-api-search" );
+			const status = panel.querySelector( ".cutey-api-filter-status" );
+			if( input )
+			{
+				input.addEventListener( "input", function()
+				{
+					CuteyDocs.filterApiObjects( input.value, status );
+				} );
 			}
 		},
-
-		filterApiObjects: function (query, statusElement) {
-			const normalizedQuery = String(query || "").trim().toLowerCase();
-			const content = document.querySelector(this.config.contentSelector);
-
-			if (!content) {
+		filterApiObjects: function( query, statusElement )
+		{
+			const normalizedQuery = String( query || "" ).trim().toLowerCase();
+			const content = document.querySelector( this.config.contentSelector );
+			if( !content )
+			{
 				return;
 			}
-
-			const objects = Array.prototype.slice.call(content.querySelectorAll(this.config.apiObjectSelector));
-
-			if (objects.length === 0) {
-				if (statusElement) {
+			const objects = Array.prototype.slice.call(
+					content.querySelectorAll( this.config.apiObjectSelector ) );
+			if( objects.length === 0 )
+			{
+				if( statusElement )
+				{
 					statusElement.textContent = "";
 				}
-
 				return;
 			}
-
 			let visibleCount = 0;
-
-			objects.forEach(function (object) {
+			objects.forEach( function( object )
+			{
 				const text = object.textContent.toLowerCase();
-
-				if (!normalizedQuery || text.indexOf(normalizedQuery) !== -1) {
-					object.classList.remove("cutey-api-hidden");
+				if( !normalizedQuery || text.indexOf( normalizedQuery ) !== -1 )
+				{
+					object.classList.remove( "cutey-api-hidden" );
 					visibleCount += 1;
-				} else {
-					object.classList.add("cutey-api-hidden");
 				}
-			});
-
-			if (statusElement) {
-				if (!normalizedQuery) {
+				else
+				{
+					object.classList.add( "cutey-api-hidden" );
+				}
+			} );
+			if( statusElement )
+			{
+				if( !normalizedQuery )
+				{
 					statusElement.textContent = "";
-				} else {
+				}
+				else
+				{
 					statusElement.textContent = visibleCount + " matching API sections";
 				}
 			}
 		},
-
-		setApiDetailsState: function (open) {
-			const detailsBlocks = document.querySelectorAll(".md-content__inner details");
-
-			detailsBlocks.forEach(function (details) {
+		setApiDetailsState: function( open )
+		{
+			const detailsBlocks = document.querySelectorAll( ".md-content__inner details" );
+			detailsBlocks.forEach( function( details )
+			{
 				details.open = open;
-			});
+			} );
 		},
-
-		clearApiFilter: function () {
-			const input = document.getElementById("cutey-api-search");
-			const status = document.querySelector(".cutey-api-filter-status");
-
-			if (!input) {
+		clearApiFilter: function()
+		{
+			const input = document.getElementById( "cutey-api-search" );
+			const status = document.querySelector( ".cutey-api-filter-status" );
+			if( !input )
+			{
 				return;
 			}
-
 			input.value = "";
-			this.filterApiObjects("", status);
+			this.filterApiObjects( "", status );
 			input.focus();
 		},
-
-		enhanceTocProgress: function () {
-			const toc = document.querySelector(this.config.tocSelector);
-
-			if (!toc || toc.getAttribute("data-cutey-toc-enhanced") === "true") {
+		enhanceTocProgress: function()
+		{
+			const toc = document.querySelector( this.config.tocSelector );
+			if( !toc || toc.getAttribute( "data-cutey-toc-enhanced" ) === "true" )
+			{
 				return;
 			}
-
-			toc.setAttribute("data-cutey-toc-enhanced", "true");
-
-			const marker = document.createElement("div");
+			toc.setAttribute( "data-cutey-toc-enhanced", "true" );
+			const marker = document.createElement( "div" );
 			marker.className = "cutey-toc-marker";
-			marker.setAttribute("aria-hidden", "true");
-
-			toc.appendChild(marker);
+			marker.setAttribute( "aria-hidden", "true" );
+			toc.appendChild( marker );
 		},
-
-		updateTocProgress: function () {
-			const headings = Array.prototype.slice.call(document.querySelectorAll(this.config.headingSelector));
-
-			if (headings.length === 0) {
+		updateTocProgress: function()
+		{
+			const headings = Array.prototype.slice.call(
+					document.querySelectorAll( this.config.headingSelector ) );
+			if( headings.length === 0 )
+			{
 				return;
 			}
-
-			let activeHeading = headings[0];
+			let activeHeading = headings[ 0 ];
 			const offset = 120;
-
-			headings.forEach(function (heading) {
+			headings.forEach( function( heading )
+			{
 				const rect = heading.getBoundingClientRect();
-
-				if (rect.top <= offset) {
+				if( rect.top <= offset )
+				{
 					activeHeading = heading;
 				}
-			});
-
-			const tocLinks = document.querySelectorAll(this.config.tocSelector + " a[href^='#']");
-			const activeId = activeHeading ? activeHeading.id : "";
-
-			tocLinks.forEach(function (link) {
-				const href = decodeURIComponent((link.getAttribute("href") || "").replace(/^#/, ""));
-
-				if (href === activeId) {
-					link.classList.add("cutey-toc-active");
-				} else {
-					link.classList.remove("cutey-toc-active");
+			} );
+			const tocLinks = document.querySelectorAll( this.config.tocSelector + " a[href^='#']" );
+			const activeId = activeHeading
+			                 ? activeHeading.id
+			                 : "";
+			tocLinks.forEach( function( link )
+			{
+				const href = decodeURIComponent(
+						( link.getAttribute( "href" ) || "" ).replace( /^#/, "" ) );
+				if( href === activeId )
+				{
+					link.classList.add( "cutey-toc-active" );
 				}
-			});
+				else
+				{
+					link.classList.remove( "cutey-toc-active" );
+				}
+			} );
 		},
-
-		addMermaidGuard: function () {
-			const blocks = document.querySelectorAll("code.language-mermaid");
-
-			blocks.forEach(function (block) {
-				block.setAttribute("data-cutey-mermaid-detected", "true");
-			});
+		addMermaidGuard: function()
+		{
+			const blocks = document.querySelectorAll( "code.language-mermaid" );
+			blocks.forEach( function( block )
+			{
+				block.setAttribute( "data-cutey-mermaid-detected", "true" );
+			} );
 		}
 	};
-
-	function ready(callback) {
-		if (document.readyState === "loading") {
-			document.addEventListener("DOMContentLoaded", callback);
-		} else {
+	
+	function ready( callback )
+	{
+		if( document.readyState === "loading" )
+		{
+			document.addEventListener( "DOMContentLoaded", callback );
+		}
+		else
+		{
 			callback();
 		}
 	}
-
-	ready(function () {
+	
+	ready( function()
+	{
 		CuteyDocs.init();
-	});
-})();
+	} );
+} )();
