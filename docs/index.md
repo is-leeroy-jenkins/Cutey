@@ -2,7 +2,7 @@
 
 ___
 
-Cutey is a Streamlit-based analytical application for exploring, validating, modeling, and exporting federal account-balance data. The application is organized around a practical balance-projection workflow: load data, inspect structure, evaluate distributions, transform numeric fields, explore relationships, compare regression models, test statistical assumptions, review period trends, and export the working dataset.
+Cutey is a python application for exploring, validating, modeling, and exporting federal account-balance data. The application is organized around a practical balance-projection workflow: load data, inspect structure, evaluate distributions, transform numeric fields, explore relationships, compare regression models, test statistical assumptions, review period trends, and export the working dataset.
 
 ## 🧭 Purpose
 
