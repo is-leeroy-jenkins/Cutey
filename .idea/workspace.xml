@@ -5,27 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f719340-05d3-4eb4-a1ff-47d5ee62e08b" name="Changes" comment="update;">
-      <change afterPath="$PROJECT_DIR$/docs/api/app.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/api/index.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/architecture.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/data-sources.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/development.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/index.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/roadmap.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/correlations.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/data-loading.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/data-overview.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/descriptive-statistics.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/distributions.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/export.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/index.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/inferential-statistics.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/installation.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/pca-clustering.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/regression.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/time-series.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/user-guide/transformations.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/css/cutey.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/assets/js/cutey.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +53,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "last_opened_file_path": "C:/Users/terry/source/repos/Cutey/docs",
+    "last_opened_file_path": "C:/Users/terry/source/repos/Cutey/docs/assets",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -83,6 +64,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\terry\source\repos\Cutey\docs\assets" />
       <recent name="C:\Users\terry\source\repos\Cutey\docs" />
     </key>
   </component>
@@ -105,7 +87,7 @@
       <workItem from="1775060664816" duration="989000" />
       <workItem from="1775065806703" duration="1335000" />
       <workItem from="1775475528358" duration="162000" />
-      <workItem from="1781657647808" duration="1506000" />
+      <workItem from="1781657647808" duration="1807000" />
     </task>
     <task id="LOCAL-00001" summary="update;">
       <option name="closed" value="true" />
@@ -171,7 +153,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781658303378</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="update;">
+      <option name="closed" value="true" />
+      <created>1781659213751</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1781659213751</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
