@@ -1,4 +1,6 @@
-# Cutey Architecture
+![](./img/cutey-architecture.png)
+
+___
 
 Cutey uses a compact Streamlit architecture organized around one application entry point, a loaded pandas dataframe, helper utilities, analytical tabs, matplotlib visualizations, and a CSV export path.
 
