@@ -1,4 +1,5 @@
-# User Guide
+![](../img/cutey-workflows.png)
+___
 
 The Cutey user guide follows the same order as the Streamlit application tabs. Use it as an operational walkthrough from data loading through export.
 

@@ -4,36 +4,23 @@
  *  File: docs/assets/js/cutey.js
  *
  *  Purpose:
- *      Provides safe progressive enhancements for the Cutey MkDocs Material site.
- *      This script does not require external libraries and is designed to fail gracefully
- *      when optional page elements are not present.
+ *      Provides safe progressive enhancements for the Cutey MkDocs Material documentation site.
+ *      The script avoids external dependencies, analytics, cookies, and visible path metadata.
  *
  *  Features:
- *      - API tools panel with search, expand all, collapse all, and clear filter
+ *      - Reading progress bar
  *      - Scroll-to-top control
- *      - Heading anchor copy buttons
+ *      - Page link and print buttons
+ *      - Heading link copy buttons
  *      - Large-table filtering
  *      - Code-block language labels
  *      - Code-block expand/collapse for long examples
+ *      - API reference filtering and expand/collapse controls
+ *      - API reference type badges
  *      - External-link hardening
- *      - Search placeholder customization
- *      - Active navigation scroll memory
- *      - Page path metadata
- *      - Keyboard focus mode
- *      - Copy current page link button
- *      - API reference member badges
  *      - Active table-of-contents highlighting
- *      - Reading progress bar
- *      - Print helper button
- *
- *  Compatibility:
- *      - MkDocs Material
- *      - mkdocstrings
- *      - Modern Chromium, Edge, Firefox, Safari
- *
- *  Notes:
- *      This file intentionally avoids external dependencies, network calls, analytics,
- *      cookies, and local storage values that contain user content.
+ *      - Keyboard focus mode
+ *      - MkDocs Material instant-navigation compatibility
  * ==========================================================================================
  */
 ( function()
@@ -62,7 +49,6 @@
 					".doc.doc-object, .doc-class, .doc-function, .doc-method, .doc-attribute, .doc-property"
 		},
 		state: {
-			pageReady: false,
 			scrollTicking: false,
 			resizeTicking: false
 		},
@@ -74,6 +60,7 @@
 				return;
 			}
 			document.documentElement.setAttribute( this.config.initializedAttribute, "true" );
+			this.removeLegacyPathMetadata();
 			this.enhanceExternalLinks();
 			this.customizeSearch();
 			this.addReadingProgress();
@@ -83,15 +70,12 @@
 			this.addTableFilters();
 			this.addCodeLabels();
 			this.addCodeToggles();
-			this.addPagePathMetadata();
 			this.restoreNavigationScroll();
 			this.enhanceKeyboardFocus();
 			this.enhanceApiReference();
 			this.addApiTools();
 			this.enhanceTocProgress();
-			this.addMermaidGuard();
 			this.bindLifecycleEvents();
-			this.state.pageReady = true;
 			this.updateReadingProgress();
 			this.updateScrollTopVisibility();
 			this.updateTocProgress();
@@ -150,6 +134,30 @@
 					}, 25 );
 				} );
 			}
+		},
+		removeLegacyPathMetadata: function()
+		{
+			const selectors = [
+				".cutey-page-path",
+				".buddy-page-path",
+				".project-page-path"
+			];
+			selectors.forEach( function( selector )
+			{
+				document.querySelectorAll( selector ).forEach( function( element )
+				{
+					element.remove();
+				} );
+			} );
+			document.querySelectorAll( ".md-content__inner div, .md-content__inner p" )
+					.forEach( function( element )
+					{
+						const text = ( element.textContent || "" ).trim();
+						if( /^Docs path:\s*/i.test( text ) )
+						{
+							element.remove();
+						}
+					} );
 		},
 		handleDocumentClick: function( event )
 		{
@@ -294,7 +302,6 @@
 			}
 			const content = document.querySelector( this.config.contentSelector );
 			const scrollTop = window.scrollY || document.documentElement.scrollTop;
-			let maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 			if( content )
 			{
 				const rect = content.getBoundingClientRect();
@@ -306,6 +313,7 @@
 				progress.style.width = ( percent * 100 ).toFixed( 2 ) + "%";
 				return;
 			}
+			let maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 			if( maxScroll <= 0 )
 			{
 				maxScroll = 1;
@@ -652,33 +660,6 @@
 				button.textContent = "Show full code";
 			}
 		},
-		addPagePathMetadata: function()
-		{
-			const content = document.querySelector( this.config.contentSelector );
-			if( !content || content.querySelector( ".cutey-page-path" ) )
-			{
-				return;
-			}
-			const h1 = content.querySelector( "h1" );
-			if( !h1 )
-			{
-				return;
-			}
-			const path = window.location.pathname
-					.replace( /\/$/, "" )
-					.split( "/" )
-					.filter( Boolean )
-					.slice( -4 )
-					.join( " / " );
-			if( !path )
-			{
-				return;
-			}
-			const meta = document.createElement( "div" );
-			meta.className = "cutey-page-path";
-			meta.textContent = "Docs path: " + path;
-			h1.insertAdjacentElement( "afterend", meta );
-		},
 		saveNavigationScroll: function()
 		{
 			const nav = document.querySelector( this.config.navSelector );
@@ -777,11 +758,7 @@
 		addApiTools: function()
 		{
 			const content = document.querySelector( this.config.contentSelector );
-			if( !content )
-			{
-				return;
-			}
-			if( content.querySelector( ".cutey-api-tools" ) )
+			if( !content || content.querySelector( ".cutey-api-tools" ) )
 			{
 				return;
 			}
@@ -855,14 +832,9 @@
 			} );
 			if( statusElement )
 			{
-				if( !normalizedQuery )
-				{
-					statusElement.textContent = "";
-				}
-				else
-				{
-					statusElement.textContent = visibleCount + " matching API sections";
-				}
+				statusElement.textContent = normalizedQuery
+				                            ? visibleCount + " matching API sections"
+				                            : "";
 			}
 		},
 		setApiDetailsState: function( open )
@@ -893,10 +865,6 @@
 				return;
 			}
 			toc.setAttribute( "data-cutey-toc-enhanced", "true" );
-			const marker = document.createElement( "div" );
-			marker.className = "cutey-toc-marker";
-			marker.setAttribute( "aria-hidden", "true" );
-			toc.appendChild( marker );
 		},
 		updateTocProgress: function()
 		{
@@ -932,14 +900,6 @@
 				{
 					link.classList.remove( "cutey-toc-active" );
 				}
-			} );
-		},
-		addMermaidGuard: function()
-		{
-			const blocks = document.querySelectorAll( "code.language-mermaid" );
-			blocks.forEach( function( block )
-			{
-				block.setAttribute( "data-cutey-mermaid-detected", "true" );
 			} );
 		}
 	};

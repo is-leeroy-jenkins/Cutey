@@ -1,4 +1,6 @@
-# Cutey Documentation
+![](./img/cutey-project.png)
+
+___
 
 Cutey is a Streamlit-based analytical application for exploring, validating, modeling, and exporting federal account-balance data. The application is organized around a practical balance-projection workflow: load data, inspect structure, evaluate distributions, transform numeric fields, explore relationships, compare regression models, test statistical assumptions, review period trends, and export the working dataset.
 
@@ -8,17 +10,17 @@ Cutey supports analysts who need a local, interactive environment for reviewing 
 
 ## 🧱 Core Workflow
 
-| Stage | Application Area | Purpose |
-|---|---|---|
-| Load | Sidebar upload or fallback Excel file | Load CSV, XLSX, or XLS data into the working dataframe. |
-| Inspect | Data tab | Review rows, columns, data types, and duplicate headers. |
-| Summarize | Descriptive Stats tab | Compute core and extended descriptive statistics. |
-| Diagnose | Distributions and Inferential Stats tabs | Review distribution shape, normality, confidence intervals, and group tests. |
-| Transform | Transforms tab | Apply log, standard-scaling, or min-max transformations. |
-| Explore | PCA + Clustering and Correlations tabs | Identify structure, clusters, and variable relationships. |
-| Model | Regression tab | Compare multiple regression estimators and diagnostics. |
-| Trend | Time Series tab | Aggregate numeric values by fiscal or period-like fields. |
-| Export | Export tab | Download the working dataframe as CSV. |
+| Stage     | Application Area                         | Purpose                                                                      |
+|-----------|------------------------------------------|------------------------------------------------------------------------------|
+| Load      | Sidebar upload or fallback Excel file    | Load CSV, XLSX, or XLS data into the working dataframe.                      |
+| Inspect   | Data tab                                 | Review rows, columns, data types, and duplicate headers.                     |
+| Summarize | Descriptive Stats tab                    | Compute core and extended descriptive statistics.                            |
+| Diagnose  | Distributions and Inferential Stats tabs | Review distribution shape, normality, confidence intervals, and group tests. |
+| Transform | Transforms tab                           | Apply log, standard-scaling, or min-max transformations.                     |
+| Explore   | PCA + Clustering and Correlations tabs   | Identify structure, clusters, and variable relationships.                    |
+| Model     | Regression tab                           | Compare multiple regression estimators and diagnostics.                      |
+| Trend     | Time Series tab                          | Aggregate numeric values by fiscal or period-like fields.                    |
+| Export    | Export tab                               | Download the working dataframe as CSV.                                       |
 
 ## 🧪 Implemented Capabilities
 
@@ -51,13 +53,13 @@ Cutey is designed for:
 
 ## 📦 Inputs and Outputs
 
-| Type | Supported |
-|---|---|
-| Input files | `.csv`, `.xlsx`, `.xls` |
-| Fallback data | `data/Account Balances.xlsx` |
-| Primary in-memory object | pandas `DataFrame` |
-| Visual outputs | Streamlit tables, metrics, matplotlib charts |
-| Download output | `balance_projection_export.csv` |
+| Type                     | Supported                                    |
+|--------------------------|----------------------------------------------|
+| Input files              | `.csv`, `.xlsx`, `.xls`                      |
+| Fallback data            | `data/Account Balances.xlsx`                 |
+| Primary in-memory object | pandas `DataFrame`                           |
+| Visual outputs           | Streamlit tables, metrics, matplotlib charts |
+| Download output          | `balance_projection_export.csv`              |
 
 ## ✅ Recommended Use
 
@@ -71,14 +73,13 @@ Cutey is designed for:
 
 ## 🔗 Documentation Map
 
-| Page | Description |
-|---|---|
-| [Architecture](architecture.md) | Application layers, data flow, and workflow design. |
-| [Data Sources](data-sources.md) | Supported data inputs and recommended dataset structure. |
-| [User Guide](user-guide/index.md) | Step-by-step application usage. |
-| [API Reference](api/index.md) | Source-generated documentation for helper functions in `app.py`. |
-| [Development](development.md) | Local setup, validation workflow, and MkDocs build process. |
-| [Roadmap](roadmap.md) | Planned enhancements and future documentation targets. |
+| Page                              | Description                                                      |
+|-----------------------------------|------------------------------------------------------------------|
+| [Architecture](architecture.md)   | Application layers, data flow, and workflow design.              |
+| [Data Sources](data-sources.md)   | Supported data inputs and recommended dataset structure.         |
+| [User Guide](user-guide/index.md) | Step-by-step application usage.                                  |
+| [API Reference](api/index.md)     | Source-generated documentation for helper functions in `app.py`. |
+| [Development](development.md)     | Local setup, validation workflow, and MkDocs build process.      |
 
 !!! warning "Analytical use"
     Cutey is intended for analytical exploration and documentation-supported review. Validate official financial, budgetary, or accounting conclusions against authoritative systems and governing guidance.

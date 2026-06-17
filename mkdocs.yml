@@ -1,4 +1,4 @@
-site_name: Cutey Documentation
+site_name: Cutey-Py Documentation
 site_description: Documentation for Cutey, a Streamlit-based federal account balance analytics and projection application.
 site_author: Terry D. Eppler
 site_url: https://is-leeroy-jenkins.github.io/Cutey/
@@ -104,5 +104,4 @@ nav:
   - API Reference:
       - Overview: api/index.md
       - Application: api/app.md
-  - Roadmap: roadmap.md
   - Development: development.md
