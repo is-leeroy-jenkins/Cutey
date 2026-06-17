@@ -10,79 +10,64 @@
  *      search tools, and supports the progressive JavaScript enhancements in cutey.js.
  * ==========================================================================================
  */
-
 /* ==========================================================================================
    Root Theme Variables
    ========================================================================================== */
-
-:root {
+:root
+{
 	--cutey-blue: #024FA3;
 	--cutey-blue-dark: #00254C;
 	--cutey-blue-deep: #011A33;
 	--cutey-blue-bright: #0078FC;
 	--cutey-blue-soft: #4DA3FF;
-
 	--cutey-bg: #141414;
 	--cutey-bg-alt: #1B1B1B;
 	--cutey-surface: #242424;
 	--cutey-surface-2: #303030;
 	--cutey-surface-3: #414141;
-
 	--cutey-border: #565557;
 	--cutey-border-blue: #00254C;
 	--cutey-table-header: #023770;
-
 	--cutey-text: #FFFFFF;
 	--cutey-text-soft: #E6EAF0;
 	--cutey-text-muted: #B8C2CC;
 	--cutey-text-dim: #8F9BA8;
-
 	--cutey-code-bg: #101820;
 	--cutey-code-border: #25364A;
-
 	--cutey-success: #33D17A;
 	--cutey-warning: #F5C542;
 	--cutey-danger: #FF6B6B;
 	--cutey-info: #4DA3FF;
-
 	--cutey-radius-sm: 6px;
 	--cutey-radius-md: 10px;
 	--cutey-radius-lg: 14px;
 	--cutey-radius-xl: 18px;
-
 	--cutey-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 	--cutey-shadow-soft: 0 4px 18px rgba(0, 0, 0, 0.22);
-
 	--cutey-transition: 140ms ease-in-out;
 }
 
 /* ==========================================================================================
    Material Theme Overrides
    ========================================================================================== */
-
-[data-md-color-scheme="slate"] {
+[data-md-color-scheme='slate']
+{
 	--md-default-bg-color: var(--cutey-bg);
 	--md-default-bg-color--light: var(--cutey-bg-alt);
 	--md-default-bg-color--lighter: var(--cutey-surface);
 	--md-default-bg-color--lightest: var(--cutey-surface-2);
-
 	--md-default-fg-color: var(--cutey-text-soft);
 	--md-default-fg-color--light: var(--cutey-text-muted);
 	--md-default-fg-color--lighter: var(--cutey-text-dim);
 	--md-default-fg-color--lightest: #6F7B87;
-
 	--md-primary-fg-color: var(--cutey-blue);
 	--md-primary-fg-color--light: var(--cutey-blue-bright);
 	--md-primary-fg-color--dark: var(--cutey-blue-dark);
-
 	--md-accent-fg-color: var(--cutey-blue-bright);
 	--md-accent-fg-color--transparent: rgba(0, 120, 252, 0.16);
-
 	--md-typeset-a-color: var(--cutey-blue-soft);
-
 	--md-code-bg-color: var(--cutey-code-bg);
 	--md-code-fg-color: #EAF2FF;
-
 	--md-code-hl-color: rgba(0, 120, 252, 0.22);
 	--md-code-hl-number-color: #B7D9FF;
 	--md-code-hl-special-color: #FFB3D1;
@@ -101,31 +86,34 @@
 /* ==========================================================================================
    Global Layout
    ========================================================================================== */
-
-html {
+html
+{
 	scroll-behavior: smooth;
 }
 
-body {
-	background:
-		radial-gradient(circle at 12% 0%, rgba(0, 120, 252, 0.12), transparent 30rem),
-		radial-gradient(circle at 85% 10%, rgba(2, 79, 163, 0.16), transparent 34rem),
-		var(--cutey-bg);
+body
+{
+	background: radial-gradient(circle at 12% 0%, rgba(0, 120, 252, 0.12), transparent 30rem),
+	radial-gradient(circle at 85% 10%, rgba(2, 79, 163, 0.16), transparent 34rem),
+	var(--cutey-bg);
 	color: var(--cutey-text-soft);
 }
 
 .md-main__inner,
-.md-grid {
+.md-grid
+{
 	max-width: 94rem;
 }
 
-.md-content__inner {
+.md-content__inner
+{
 	max-width: none;
 	padding-bottom: 3.5rem;
 }
 
 .md-sidebar,
-.md-sidebar__scrollwrap {
+.md-sidebar__scrollwrap
+{
 	scrollbar-width: thin;
 	scrollbar-color: var(--cutey-border) transparent;
 }
@@ -133,72 +121,81 @@ body {
 /* ==========================================================================================
    Dark Blue Header / Title Bar
    ========================================================================================== */
-
-.md-header {
-	background:
-		linear-gradient(90deg, var(--cutey-blue-dark) 0%, var(--cutey-blue) 48%, var(--cutey-blue-dark) 100%);
+.md-header
+{
+	background: linear-gradient(90deg, var(--cutey-blue-dark) 0%, var(--cutey-blue) 48%, var(--cutey-blue-dark) 100%);
 	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.38);
 	border-bottom: 1px solid rgba(77, 163, 255, 0.28);
 }
 
 .md-header__title,
 .md-header__topic,
-.md-header__button {
+.md-header__button
+{
 	color: #FFFFFF;
 }
 
-.md-header__title {
+.md-header__title
+{
 	font-weight: 700;
 	letter-spacing: 0.01em;
 }
 
-.md-header__button:hover {
+.md-header__button:hover
+{
 	color: #D8EBFF;
 }
 
-.md-tabs {
-	background:
-		linear-gradient(90deg, var(--cutey-blue-dark) 0%, #023770 48%, var(--cutey-blue-dark) 100%);
+.md-tabs
+{
+	background: linear-gradient(90deg, var(--cutey-blue-dark) 0%, #023770 48%, var(--cutey-blue-dark) 100%);
 	border-bottom: 1px solid rgba(77, 163, 255, 0.22);
 }
 
-.md-tabs__link {
+.md-tabs__link
+{
 	color: rgba(255, 255, 255, 0.84);
 	font-weight: 600;
 }
 
 .md-tabs__link:hover,
-.md-tabs__link--active {
+.md-tabs__link--active
+{
 	color: #FFFFFF;
 }
 
-.md-search__form {
+.md-search__form
+{
 	background-color: rgba(255, 255, 255, 0.12);
 	border: 1px solid rgba(255, 255, 255, 0.18);
 	border-radius: var(--cutey-radius-md);
 }
 
-.md-search__form:hover {
+.md-search__form:hover
+{
 	background-color: rgba(255, 255, 255, 0.18);
 }
 
-.md-search__input {
+.md-search__input
+{
 	color: #FFFFFF;
 }
 
-.md-search__input::placeholder {
+.md-search__input::placeholder
+{
 	color: rgba(255, 255, 255, 0.72);
 }
 
-.md-search__icon {
+.md-search__icon
+{
 	color: rgba(255, 255, 255, 0.78);
 }
 
 /* ==========================================================================================
    Typography
    ========================================================================================== */
-
-.md-typeset {
+.md-typeset
+{
 	font-size: 0.84rem;
 	line-height: 1.68;
 	color: var(--cutey-text-soft);
@@ -209,79 +206,90 @@ body {
 .md-typeset h3,
 .md-typeset h4,
 .md-typeset h5,
-.md-typeset h6 {
+.md-typeset h6
+{
 	color: #FFFFFF;
 	font-weight: 750;
 	letter-spacing: -0.015em;
 }
 
-.md-typeset h1 {
+.md-typeset h1
+{
 	margin-bottom: 0.75rem;
 	padding-bottom: 0.55rem;
 	border-bottom: 1px solid rgba(77, 163, 255, 0.26);
 	font-size: 2.05rem;
 }
 
-.md-typeset h2 {
+.md-typeset h2
+{
 	margin-top: 2.15rem;
 	color: #F5FAFF;
 	font-size: 1.48rem;
 }
 
-.md-typeset h3 {
+.md-typeset h3
+{
 	margin-top: 1.65rem;
 	color: #EAF4FF;
 	font-size: 1.18rem;
 }
 
-.md-typeset h4 {
+.md-typeset h4
+{
 	color: #D8EBFF;
 	font-size: 1.02rem;
 }
 
 .md-typeset p,
-.md-typeset li {
+.md-typeset li
+{
 	color: var(--cutey-text-soft);
 }
 
-.md-typeset strong {
+.md-typeset strong
+{
 	color: #FFFFFF;
 	font-weight: 700;
 }
 
-.md-typeset em {
+.md-typeset em
+{
 	color: #D9E8F8;
 }
 
-.md-typeset a {
+.md-typeset a
+{
 	color: var(--cutey-blue-soft);
 	text-decoration-thickness: 0.08em;
 	text-underline-offset: 0.16em;
 }
 
-.md-typeset a:hover {
+.md-typeset a:hover
+{
 	color: #8AC5FF;
 }
 
-.md-typeset hr {
+.md-typeset hr
+{
 	border-bottom-color: rgba(86, 85, 87, 0.7);
 }
 
 /* ==========================================================================================
    API Tools Panel
    ========================================================================================== */
-
-.cutey-api-tools {
+.cutey-api-tools
+{
 	margin: 1.25rem 0 1.75rem;
 	padding: 1rem 1.1rem;
 	border: 1px solid rgba(77, 163, 255, 0.42);
 	border-radius: var(--cutey-radius-lg);
-	background:
-		linear-gradient(180deg, rgba(2, 37, 76, 0.78), rgba(20, 28, 40, 0.92));
+	background: linear-gradient(180deg, rgba(2, 37, 76, 0.78), rgba(20, 28, 40, 0.92));
 	box-shadow: var(--cutey-shadow-soft);
 }
 
-.cutey-api-tools-title {
+.cutey-api-tools-title
+{
 	margin: 0 0 0.75rem !important;
 	padding-bottom: 0 !important;
 	border-bottom: none !important;
@@ -290,7 +298,8 @@ body {
 	font-weight: 800 !important;
 }
 
-.cutey-api-search-label {
+.cutey-api-search-label
+{
 	display: block;
 	margin-bottom: 0.35rem;
 	color: var(--cutey-text-muted);
@@ -299,7 +308,8 @@ body {
 	letter-spacing: 0.02em;
 }
 
-.cutey-api-search {
+.cutey-api-search
+{
 	width: 100%;
 	padding: 0.75rem 0.9rem;
 	border: 1px solid rgba(77, 163, 255, 0.5);
@@ -310,68 +320,73 @@ body {
 	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
 }
 
-.cutey-api-search::placeholder {
+.cutey-api-search::placeholder
+{
 	color: rgba(230, 234, 240, 0.52);
 }
 
-.cutey-api-search:focus {
+.cutey-api-search:focus
+{
 	outline: 2px solid rgba(77, 163, 255, 0.48);
 	outline-offset: 2px;
 	border-color: rgba(77, 163, 255, 0.82);
 }
 
-.cutey-api-tool-buttons {
+.cutey-api-tool-buttons
+{
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.55rem;
 	margin-top: 1rem;
 }
 
-.cutey-api-tool-button {
+.cutey-api-tool-button
+{
 	padding: 0.48rem 0.82rem;
 	border: 1px solid rgba(77, 163, 255, 0.5);
 	border-radius: 999px;
-	background:
-		linear-gradient(180deg, rgba(2, 79, 163, 0.82), rgba(0, 37, 76, 0.92));
+	background: linear-gradient(180deg, rgba(2, 79, 163, 0.82), rgba(0, 37, 76, 0.92));
 	color: #FFFFFF;
 	font-size: 0.74rem;
 	font-weight: 800;
 	cursor: pointer;
-	transition:
-		background-color var(--cutey-transition),
-		border-color var(--cutey-transition),
-		color var(--cutey-transition),
-		transform var(--cutey-transition);
+	transition: background-color var(--cutey-transition),
+	border-color var(--cutey-transition),
+	color var(--cutey-transition),
+	transform var(--cutey-transition);
 }
 
-.cutey-api-tool-button:hover {
+.cutey-api-tool-button:hover
+{
 	border-color: rgba(255, 255, 255, 0.68);
-	background:
-		linear-gradient(180deg, rgba(0, 120, 252, 0.92), rgba(2, 79, 163, 0.95));
+	background: linear-gradient(180deg, rgba(0, 120, 252, 0.92), rgba(2, 79, 163, 0.95));
 	color: #FFFFFF;
 	transform: translateY(-1px);
 }
 
-.cutey-api-tool-button:active {
+.cutey-api-tool-button:active
+{
 	transform: translateY(0);
 }
 
-.cutey-api-filter-status {
+.cutey-api-filter-status
+{
 	margin: 0.75rem 0 0;
 	color: var(--cutey-text-muted);
 	font-size: 0.72rem;
 	font-weight: 700;
 }
 
-.cutey-api-hidden {
+.cutey-api-hidden
+{
 	display: none !important;
 }
 
 /* ==========================================================================================
    Headings with JS-Injected Section Links
    ========================================================================================== */
-
-.cutey-heading-link {
+.cutey-heading-link
+{
 	margin-left: 0.45rem;
 	padding: 0.08rem 0.35rem;
 	border: 1px solid rgba(77, 163, 255, 0.28);
@@ -383,21 +398,22 @@ body {
 	cursor: pointer;
 	opacity: 0;
 	transform: translateY(-1px);
-	transition:
-		opacity var(--cutey-transition),
-		background-color var(--cutey-transition),
-		border-color var(--cutey-transition),
-		color var(--cutey-transition);
+	transition: opacity var(--cutey-transition),
+	background-color var(--cutey-transition),
+	border-color var(--cutey-transition),
+	color var(--cutey-transition);
 }
 
 h2:hover .cutey-heading-link,
 h3:hover .cutey-heading-link,
 h4:hover .cutey-heading-link,
-.cutey-heading-link:focus {
+.cutey-heading-link:focus
+{
 	opacity: 1;
 }
 
-.cutey-heading-link:hover {
+.cutey-heading-link:hover
+{
 	background: rgba(0, 120, 252, 0.18);
 	border-color: rgba(77, 163, 255, 0.55);
 	color: #FFFFFF;
@@ -406,43 +422,49 @@ h4:hover .cutey-heading-link,
 /* ==========================================================================================
    Navigation
    ========================================================================================== */
-
-.md-nav__title {
+.md-nav__title
+{
 	color: #FFFFFF;
 	font-weight: 700;
 }
 
-.md-nav__item .md-nav__link--active {
+.md-nav__item .md-nav__link--active
+{
 	color: var(--cutey-blue-soft);
 	font-weight: 700;
 }
 
-.md-nav__link:hover {
+.md-nav__link:hover
+{
 	color: #FFFFFF;
 }
 
-.md-nav--secondary .md-nav__link {
+.md-nav--secondary .md-nav__link
+{
 	color: var(--cutey-text-muted);
 }
 
 .md-nav--secondary .md-nav__link:hover,
-.md-nav--secondary .md-nav__link.cutey-toc-active {
+.md-nav--secondary .md-nav__link.cutey-toc-active
+{
 	color: var(--cutey-blue-soft);
 }
 
-.cutey-toc-active {
+.cutey-toc-active
+{
 	font-weight: 700;
 }
 
-.cutey-toc-marker {
+.cutey-toc-marker
+{
 	display: none;
 }
 
 /* ==========================================================================================
    Tables
    ========================================================================================== */
-
-.md-typeset table:not([class]) {
+.md-typeset table:not([class])
+{
 	display: table;
 	width: 100%;
 	border: 1px solid var(--cutey-border);
@@ -454,32 +476,37 @@ h4:hover .cutey-heading-link,
 	box-shadow: var(--cutey-shadow-soft);
 }
 
-.md-typeset table:not([class]) th {
-	background:
-		linear-gradient(180deg, var(--cutey-table-header) 0%, var(--cutey-blue-dark) 100%);
+.md-typeset table:not([class]) th
+{
+	background: linear-gradient(180deg, var(--cutey-table-header) 0%, var(--cutey-blue-dark) 100%);
 	color: #FFFFFF;
 	font-weight: 750;
 	border-bottom: 1px solid rgba(77, 163, 255, 0.34);
 }
 
-.md-typeset table:not([class]) td {
+.md-typeset table:not([class]) td
+{
 	color: var(--cutey-text-soft);
 	border-top: 1px solid rgba(0, 37, 76, 0.86);
 }
 
-.md-typeset table:not([class]) tr:nth-child(even) td {
+.md-typeset table:not([class]) tr:nth-child(even) td
+{
 	background-color: rgba(255, 255, 255, 0.025);
 }
 
-.md-typeset table:not([class]) tr:hover td {
+.md-typeset table:not([class]) tr:hover td
+{
 	background-color: rgba(0, 120, 252, 0.08);
 }
 
-.md-typeset table:not([class]) code {
+.md-typeset table:not([class]) code
+{
 	white-space: nowrap;
 }
 
-.cutey-table-tools {
+.cutey-table-tools
+{
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -492,7 +519,8 @@ h4:hover .cutey-heading-link,
 	box-shadow: var(--cutey-shadow-soft);
 }
 
-.cutey-table-filter {
+.cutey-table-filter
+{
 	width: min(24rem, 100%);
 	padding: 0.45rem 0.7rem;
 	border: 1px solid rgba(77, 163, 255, 0.34);
@@ -502,16 +530,19 @@ h4:hover .cutey-heading-link,
 	font-size: 0.78rem;
 }
 
-.cutey-table-filter::placeholder {
+.cutey-table-filter::placeholder
+{
 	color: var(--cutey-text-dim);
 }
 
-.cutey-table-filter:focus {
+.cutey-table-filter:focus
+{
 	outline: 2px solid rgba(77, 163, 255, 0.42);
 	outline-offset: 2px;
 }
 
-.cutey-table-count {
+.cutey-table-count
+{
 	color: var(--cutey-text-muted);
 	font-size: 0.74rem;
 	white-space: nowrap;
@@ -520,28 +551,30 @@ h4:hover .cutey-heading-link,
 /* ==========================================================================================
    Code Blocks
    ========================================================================================== */
-
-.md-typeset code {
+.md-typeset code
+{
 	border-radius: var(--cutey-radius-sm);
 	background-color: rgba(16, 24, 32, 0.96);
 	color: #EAF2FF;
 	font-size: 0.78rem;
 }
 
-.md-typeset pre {
+.md-typeset pre
+{
 	border: 1px solid var(--cutey-code-border);
 	border-radius: var(--cutey-radius-lg);
-	background:
-		linear-gradient(180deg, rgba(16, 24, 32, 0.98), rgba(13, 18, 24, 0.98));
+	background: linear-gradient(180deg, rgba(16, 24, 32, 0.98), rgba(13, 18, 24, 0.98));
 	box-shadow: var(--cutey-shadow-soft);
 }
 
-.md-typeset pre > code {
+.md-typeset pre > code
+{
 	font-size: 0.76rem;
 	line-height: 1.62;
 }
 
-.cutey-code-label {
+.cutey-code-label
+{
 	display: inline-flex;
 	align-items: center;
 	margin: 1rem 0 0;
@@ -558,27 +591,31 @@ h4:hover .cutey-heading-link,
 }
 
 .cutey-code-label + .highlight,
-.cutey-code-label + pre {
+.cutey-code-label + pre
+{
 	margin-top: 0 !important;
 }
 
-.cutey-code-collapsed {
+.cutey-code-collapsed
+{
 	position: relative;
 	overflow: hidden;
 }
 
-.cutey-code-collapsed::after {
+.cutey-code-collapsed::after
+{
 	position: absolute;
 	right: 0;
 	bottom: 0;
 	left: 0;
 	height: 5rem;
 	background: linear-gradient(180deg, transparent, rgba(16, 24, 32, 0.98));
-	content: "";
+	content: '';
 	pointer-events: none;
 }
 
-.cutey-code-toggle {
+.cutey-code-toggle
+{
 	display: inline-flex;
 	align-items: center;
 	margin: 0.35rem 0 1rem;
@@ -590,13 +627,13 @@ h4:hover .cutey-heading-link,
 	font-size: 0.72rem;
 	font-weight: 700;
 	cursor: pointer;
-	transition:
-		background-color var(--cutey-transition),
-		color var(--cutey-transition),
-		border-color var(--cutey-transition);
+	transition: background-color var(--cutey-transition),
+	color var(--cutey-transition),
+	border-color var(--cutey-transition);
 }
 
-.cutey-code-toggle:hover {
+.cutey-code-toggle:hover
+{
 	background: rgba(0, 120, 252, 0.22);
 	border-color: rgba(77, 163, 255, 0.6);
 	color: #FFFFFF;
@@ -605,9 +642,9 @@ h4:hover .cutey-heading-link,
 /* ==========================================================================================
    Admonitions and Details
    ========================================================================================== */
-
 .md-typeset .admonition,
-.md-typeset details {
+.md-typeset details
+{
 	border-radius: var(--cutey-radius-lg);
 	border-color: rgba(77, 163, 255, 0.32);
 	background-color: rgba(36, 36, 36, 0.86);
@@ -615,7 +652,8 @@ h4:hover .cutey-heading-link,
 }
 
 .md-typeset .admonition-title,
-.md-typeset summary {
+.md-typeset summary
+{
 	border-radius: var(--cutey-radius-lg) var(--cutey-radius-lg) 0 0;
 	background-color: rgba(2, 55, 112, 0.72);
 	color: #FFFFFF;
@@ -623,53 +661,59 @@ h4:hover .cutey-heading-link,
 }
 
 .md-typeset .admonition.note,
-.md-typeset details.note {
+.md-typeset details.note
+{
 	border-color: rgba(77, 163, 255, 0.38);
 }
 
 .md-typeset .admonition.warning,
-.md-typeset details.warning {
+.md-typeset details.warning
+{
 	border-color: rgba(245, 197, 66, 0.5);
 }
 
 .md-typeset .admonition.danger,
-.md-typeset details.danger {
+.md-typeset details.danger
+{
 	border-color: rgba(255, 107, 107, 0.5);
 }
 
 /* ==========================================================================================
    Cards, Grids, Buttons
    ========================================================================================== */
-
-.md-typeset .grid.cards > ul > li {
+.md-typeset .grid.cards > ul > li
+{
 	border: 1px solid rgba(86, 85, 87, 0.74);
 	border-radius: var(--cutey-radius-lg);
 	background: rgba(36, 36, 36, 0.84);
 	box-shadow: var(--cutey-shadow-soft);
-	transition:
-		transform var(--cutey-transition),
-		border-color var(--cutey-transition),
-		background-color var(--cutey-transition);
+	transition: transform var(--cutey-transition),
+	border-color var(--cutey-transition),
+	background-color var(--cutey-transition);
 }
 
-.md-typeset .grid.cards > ul > li:hover {
+.md-typeset .grid.cards > ul > li:hover
+{
 	transform: translateY(-2px);
 	border-color: rgba(77, 163, 255, 0.45);
 	background: rgba(48, 48, 48, 0.94);
 }
 
-.md-typeset .md-button {
+.md-typeset .md-button
+{
 	border-radius: var(--cutey-radius-md);
 	font-weight: 750;
 }
 
-.md-typeset .md-button--primary {
+.md-typeset .md-button--primary
+{
 	background-color: var(--cutey-blue);
 	border-color: var(--cutey-blue);
 	color: #FFFFFF;
 }
 
-.md-typeset .md-button--primary:hover {
+.md-typeset .md-button--primary:hover
+{
 	background-color: var(--cutey-blue-bright);
 	border-color: var(--cutey-blue-bright);
 	color: #FFFFFF;
@@ -678,24 +722,27 @@ h4:hover .cutey-heading-link,
 /* ==========================================================================================
    Images and Diagrams
    ========================================================================================== */
-
-.md-typeset img {
+.md-typeset img
+{
 	border-radius: var(--cutey-radius-lg);
 }
 
 .md-typeset p > img,
-.md-typeset figure img {
+.md-typeset figure img
+{
 	display: block;
 	margin: 1.2rem auto;
 	border: 1px solid rgba(77, 163, 255, 0.22);
 	box-shadow: var(--cutey-shadow);
 }
 
-.md-typeset figure {
+.md-typeset figure
+{
 	text-align: center;
 }
 
-.md-typeset figcaption {
+.md-typeset figcaption
+{
 	color: var(--cutey-text-muted);
 	font-size: 0.76rem;
 }
@@ -703,13 +750,13 @@ h4:hover .cutey-heading-link,
 /* ==========================================================================================
    API Reference / mkdocstrings
    ========================================================================================== */
-
 .doc.doc-object,
 .doc-class,
 .doc-function,
 .doc-method,
 .doc-attribute,
-.doc-property {
+.doc-property
+{
 	position: relative;
 	margin-top: 1.1rem;
 	padding: 0.85rem 1rem;
@@ -719,27 +766,32 @@ h4:hover .cutey-heading-link,
 	box-shadow: var(--cutey-shadow-soft);
 }
 
-.doc-heading {
+.doc-heading
+{
 	color: #FFFFFF;
 }
 
 .doc-label,
 .doc-label-class-attribute,
-.doc-label-instance-attribute {
+.doc-label-instance-attribute
+{
 	border-radius: var(--cutey-radius-sm);
 	background: rgba(0, 120, 252, 0.14);
 	color: var(--cutey-blue-soft);
 }
 
-.doc-signature {
+.doc-signature
+{
 	color: #EAF2FF;
 }
 
-.doc-contents {
+.doc-contents
+{
 	color: var(--cutey-text-soft);
 }
 
-.cutey-api-badge {
+.cutey-api-badge
+{
 	display: inline-flex;
 	align-items: center;
 	margin-left: 0.5rem;
@@ -755,15 +807,16 @@ h4:hover .cutey-heading-link,
 	vertical-align: middle;
 }
 
-.doc-contents table {
+.doc-contents table
+{
 	font-size: 0.78rem;
 }
 
 /* ==========================================================================================
    Page Tools from cutey.js
    ========================================================================================== */
-
-.cutey-page-tools {
+.cutey-page-tools
+{
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -771,7 +824,8 @@ h4:hover .cutey-heading-link,
 	margin: -0.25rem 0 1.15rem;
 }
 
-.cutey-page-tools button {
+.cutey-page-tools button
+{
 	padding: 0.32rem 0.62rem;
 	border: 1px solid rgba(77, 163, 255, 0.34);
 	border-radius: var(--cutey-radius-md);
@@ -780,19 +834,20 @@ h4:hover .cutey-heading-link,
 	font-size: 0.72rem;
 	font-weight: 750;
 	cursor: pointer;
-	transition:
-		background-color var(--cutey-transition),
-		border-color var(--cutey-transition),
-		color var(--cutey-transition);
+	transition: background-color var(--cutey-transition),
+	border-color var(--cutey-transition),
+	color var(--cutey-transition);
 }
 
-.cutey-page-tools button:hover {
+.cutey-page-tools button:hover
+{
 	background: rgba(0, 120, 252, 0.22);
 	border-color: rgba(77, 163, 255, 0.58);
 	color: #FFFFFF;
 }
 
-.cutey-page-path {
+.cutey-page-path
+{
 	margin: -0.65rem 0 1rem;
 	color: var(--cutey-text-dim);
 	font-size: 0.72rem;
@@ -803,8 +858,8 @@ h4:hover .cutey-heading-link,
 /* ==========================================================================================
    Reading Progress and Scroll-to-Top
    ========================================================================================== */
-
-#cutey-reading-progress {
+#cutey-reading-progress
+{
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -815,17 +870,18 @@ h4:hover .cutey-heading-link,
 	pointer-events: none;
 }
 
-#cutey-reading-progress span {
+#cutey-reading-progress span
+{
 	display: block;
 	width: 0%;
 	height: 100%;
-	background:
-		linear-gradient(90deg, var(--cutey-blue-soft), var(--cutey-blue-bright), #80D0FF);
+	background: linear-gradient(90deg, var(--cutey-blue-soft), var(--cutey-blue-bright), #80D0FF);
 	box-shadow: 0 0 12px rgba(77, 163, 255, 0.9);
 	transition: width 90ms linear;
 }
 
-.cutey-scroll-top {
+.cutey-scroll-top
+{
 	position: fixed;
 	right: 1.05rem;
 	bottom: 1.05rem;
@@ -837,8 +893,7 @@ h4:hover .cutey-heading-link,
 	height: 2.45rem;
 	border: 1px solid rgba(77, 163, 255, 0.45);
 	border-radius: 999px;
-	background:
-		linear-gradient(180deg, var(--cutey-blue), var(--cutey-blue-dark));
+	background: linear-gradient(180deg, var(--cutey-blue), var(--cutey-blue-dark));
 	color: #FFFFFF;
 	font-size: 1.15rem;
 	font-weight: 900;
@@ -847,34 +902,35 @@ h4:hover .cutey-heading-link,
 	opacity: 0;
 	pointer-events: none;
 	transform: translateY(0.6rem);
-	transition:
-		opacity var(--cutey-transition),
-		transform var(--cutey-transition),
-		background-color var(--cutey-transition),
-		border-color var(--cutey-transition);
+	transition: opacity var(--cutey-transition),
+	transform var(--cutey-transition),
+	background-color var(--cutey-transition),
+	border-color var(--cutey-transition);
 }
 
-.cutey-scroll-top.is-visible {
+.cutey-scroll-top.is-visible
+{
 	opacity: 1;
 	pointer-events: auto;
 	transform: translateY(0);
 }
 
-.cutey-scroll-top:hover {
+.cutey-scroll-top:hover
+{
 	border-color: rgba(255, 255, 255, 0.72);
-	background:
-		linear-gradient(180deg, var(--cutey-blue-bright), var(--cutey-blue));
+	background: linear-gradient(180deg, var(--cutey-blue-bright), var(--cutey-blue));
 }
 
 /* ==========================================================================================
    Links
    ========================================================================================== */
-
-.cutey-external-link {
+.cutey-external-link
+{
 	font-weight: 600;
 }
 
-.cutey-external-indicator {
+.cutey-external-indicator
+{
 	color: var(--cutey-blue-soft);
 	font-size: 0.82em;
 }
@@ -882,13 +938,13 @@ h4:hover .cutey-heading-link,
 /* ==========================================================================================
    Focus and Accessibility
    ========================================================================================== */
-
 .cutey-keyboard-mode a:focus,
 .cutey-keyboard-mode button:focus,
 .cutey-keyboard-mode input:focus,
 .cutey-keyboard-mode textarea:focus,
 .cutey-keyboard-mode select:focus,
-.cutey-keyboard-mode summary:focus {
+.cutey-keyboard-mode summary:focus
+{
 	outline: 2px solid var(--cutey-blue-soft) !important;
 	outline-offset: 3px !important;
 }
@@ -896,9 +952,9 @@ h4:hover .cutey-heading-link,
 /* ==========================================================================================
    Utility Badges
    ========================================================================================== */
-
 .cutey-pill,
-.md-typeset .cutey-pill {
+.md-typeset .cutey-pill
+{
 	display: inline-flex;
 	align-items: center;
 	gap: 0.25rem;
@@ -911,19 +967,22 @@ h4:hover .cutey-heading-link,
 	font-weight: 750;
 }
 
-.cutey-pill.success {
+.cutey-pill.success
+{
 	border-color: rgba(51, 209, 122, 0.38);
 	background: rgba(51, 209, 122, 0.12);
 	color: #8EF0B5;
 }
 
-.cutey-pill.warning {
+.cutey-pill.warning
+{
 	border-color: rgba(245, 197, 66, 0.44);
 	background: rgba(245, 197, 66, 0.12);
 	color: #FFE083;
 }
 
-.cutey-pill.danger {
+.cutey-pill.danger
+{
 	border-color: rgba(255, 107, 107, 0.44);
 	background: rgba(255, 107, 107, 0.12);
 	color: #FFB1B1;
@@ -932,21 +991,22 @@ h4:hover .cutey-heading-link,
 /* ==========================================================================================
    Footer
    ========================================================================================== */
-
-.md-footer {
+.md-footer
+{
 	background-color: var(--cutey-blue-deep);
 	border-top: 1px solid rgba(77, 163, 255, 0.24);
 }
 
-.md-footer-meta {
+.md-footer-meta
+{
 	background-color: #010D1A;
 }
 
 /* ==========================================================================================
    Print Styling
    ========================================================================================== */
-
-@media print {
+@media print
+{
 	.md-header,
 	.md-tabs,
 	.md-sidebar,
@@ -957,51 +1017,60 @@ h4:hover .cutey-heading-link,
 	.cutey-heading-link,
 	.cutey-code-toggle,
 	.cutey-table-tools,
-	.cutey-api-tools {
+	.cutey-api-tools
+	{
 		display: none !important;
 	}
-
-	body {
+	
+	body
+	{
 		background: #FFFFFF !important;
 		color: #000000 !important;
 	}
-
-	.md-content__inner {
+	
+	.md-content__inner
+	{
 		margin: 0 !important;
 		padding: 0 !important;
 	}
-
+	
 	.md-typeset,
 	.md-typeset p,
 	.md-typeset li,
-	.md-typeset td {
+	.md-typeset td
+	{
 		color: #000000 !important;
 	}
-
+	
 	.md-typeset h1,
 	.md-typeset h2,
 	.md-typeset h3,
-	.md-typeset h4 {
+	.md-typeset h4
+	{
 		color: #000000 !important;
 	}
-
-	.md-typeset a {
+	
+	.md-typeset a
+	{
 		color: #000000 !important;
 		text-decoration: underline;
 	}
-
-	.md-typeset table:not([class]) {
+	
+	.md-typeset table:not([class])
+	{
 		border: 1px solid #999999;
 		box-shadow: none;
 	}
-
-	.md-typeset table:not([class]) th {
+	
+	.md-typeset table:not([class]) th
+	{
 		background: #EAEAEA !important;
 		color: #000000 !important;
 	}
-
+	
 	.md-typeset pre,
-	.md-typeset code {
+	.md-typeset code
+	{
 		background: #F4F4F4 !important;
 		color: #000000 !important;
 		border-color: #CCCCCC !important;
@@ -1011,62 +1080,75 @@ h4:hover .cutey-heading-link,
 /* ==========================================================================================
    Responsive Adjustments
    ========================================================================================== */
-
-@media screen and (max-width: 76.1875em) {
+@media screen and (max-width: 76.1875em)
+{
 	.md-main__inner,
-	.md-grid {
+	.md-grid
+	{
 		max-width: 100%;
 	}
-
-	.md-typeset {
+	
+	.md-typeset
+	{
 		font-size: 0.82rem;
 	}
-
-	.cutey-table-tools {
+	
+	.cutey-table-tools
+	{
 		align-items: stretch;
 		flex-direction: column;
 	}
-
-	.cutey-table-filter {
+	
+	.cutey-table-filter
+	{
 		width: 100%;
 	}
-
-	.cutey-table-count {
+	
+	.cutey-table-count
+	{
 		white-space: normal;
 	}
 }
 
-@media screen and (max-width: 44.9375em) {
-	.md-typeset h1 {
+@media screen and (max-width: 44.9375em)
+{
+	.md-typeset h1
+	{
 		font-size: 1.65rem;
 	}
-
-	.md-typeset h2 {
+	
+	.md-typeset h2
+	{
 		font-size: 1.3rem;
 	}
-
-	.md-typeset h3 {
+	
+	.md-typeset h3
+	{
 		font-size: 1.08rem;
 	}
-
-	.cutey-scroll-top {
+	
+	.cutey-scroll-top
+	{
 		right: 0.75rem;
 		bottom: 0.75rem;
 		width: 2.25rem;
 		height: 2.25rem;
 	}
-
-	.cutey-page-tools {
+	
+	.cutey-page-tools
+	{
 		margin-top: 0;
 	}
-
+	
 	.cutey-page-tools button,
-	.cutey-api-tool-button {
+	.cutey-api-tool-button
+	{
 		width: 100%;
 		justify-content: center;
 	}
-
-	.cutey-api-tool-buttons {
+	
+	.cutey-api-tool-buttons
+	{
 		flex-direction: column;
 	}
 }
@@ -1074,11 +1156,12 @@ h4:hover .cutey-heading-link,
 /* ==========================================================================================
    Reduced Motion
    ========================================================================================== */
-
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce)
+{
 	*,
 	*::before,
-	*::after {
+	*::after
+	{
 		scroll-behavior: auto !important;
 		transition-duration: 0.001ms !important;
 		animation-duration: 0.001ms !important;
