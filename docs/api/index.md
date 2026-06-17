@@ -8,8 +8,8 @@ The API reference documents source-level helper functions used by the Streamlit 
 
 ## 🧱 Modules
 
-| Module | Description |
-|---|---|
+| Module          | Description                                                                                             |
+|-----------------|---------------------------------------------------------------------------------------------------------|
 | [`app`](app.md) | Streamlit application, data-loading helpers, numeric-column helpers, plotting helper, and tab workflow. |
 
 ## ⚠️ Import-Time Note
@@ -18,11 +18,11 @@ Streamlit applications often execute UI code at import time. If mkdocstrings has
 
 ## ✅ Recommended Future API Split
 
-| Future API Page | Source Module |
-|---|---|
-| Data | `data.py` |
-| Statistics | `statistics.py` |
-| Visualization | `visualization.py` |
-| Models | `models.py` |
-| Forecasting | `forecasting.py` |
-| UI | `ui.py` |
+| Future API Page | Source Module      |
+|-----------------|--------------------|
+| Data            | `data.py`          |
+| Statistics      | `statistics.py`    |
+| Visualization   | `visualization.py` |
+| Models          | `models.py`        |
+| Forecasting     | `forecasting.py`   |
+| UI              | `ui.py`            |

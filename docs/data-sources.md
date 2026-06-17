@@ -4,40 +4,40 @@ Cutey is designed to work with tabular financial, budget-execution, and account-
 
 ## 🧭 Purpose
 
-This page documents the data that Cutey can load, the fields that improve analytical value, and the recommended preparation checks before using statistical or machine-learning tabs.
+Below describes the data that Cutey can load, the fields that improve analytical value, and the recommended preparation checks before using statistical or machine-learning tabs.
 
 ## 📥 Supported File Types
 
-| File Type | Extension | Behavior |
-|---|---:|---|
-| CSV | `.csv` | Loaded directly into a pandas dataframe. |
-| Excel workbook | `.xlsx` | Sheet names are listed and the selected sheet is loaded. |
-| Legacy Excel workbook | `.xls` | Sheet names are listed and the selected sheet is loaded. |
-| Fallback Excel file | `data/Account Balances.xlsx` | Loaded when no upload is provided and the file exists. |
+| File Type             |                    Extension | Behavior                                                 |
+|-----------------------|-----------------------------:|----------------------------------------------------------|
+| CSV                   |                       `.csv` | Loaded directly into a pandas dataframe.                 |
+| Excel workbook        |                      `.xlsx` | Sheet names are listed and the selected sheet is loaded. |
+| Legacy Excel workbook |                       `.xls` | Sheet names are listed and the selected sheet is loaded. |
+| Fallback Excel file   | `data/Account Balances.xlsx` | Loaded when no upload is provided and the file exists.   |
 
 ## 🧾 Recommended Dataset Structure
 
 Cutey works best with datasets that include:
 
-| Field Type | Examples | Why It Helps |
-|---|---|---|
-| Numeric balances | obligations, outlays, recoveries, unobligated balances, resources | Required for statistics, transformations, PCA, correlations, regression, and trends. |
-| Period fields | fiscal year, period, availability period | Required for the Time Series tab to group and visualize trends. |
-| Account identifiers | TAS, main account, agency, bureau, account name | Useful for filtering, grouping, and interpretation outside the app. |
-| Classification fields | account type, availability category, program activity | Useful for inferential grouping and analyst review. |
-| Target variables | future balance, outlay, obligation rate, execution rate | Required for supervised regression workflows. |
+| Field Type            | Examples                                                          | Why It Helps                                                                         |
+|-----------------------|-------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| Numeric balances      | obligations, outlays, recoveries, unobligated balances, resources | Required for statistics, transformations, PCA, correlations, regression, and trends. |
+| Period fields         | fiscal year, period, availability period                          | Required for the Time Series tab to group and visualize trends.                      |
+| Account identifiers   | TAS, main account, agency, bureau, account name                   | Useful for filtering, grouping, and interpretation outside the app.                  |
+| Classification fields | account type, availability category, program activity             | Useful for inferential grouping and analyst review.                                  |
+| Target variables      | future balance, outlay, obligation rate, execution rate           | Required for supervised regression workflows.                                        |
 
 ## 🏛️ Federal Financial Context
 
-The README describes Cutey in the context of federal budget execution and accounting datasets. Suitable source concepts include:
+Cutey's domain is federal budget execution and accounting. Suitable source concepts include:
 
-| Data Concept | Typical Use |
-|---|---|
-| SF-133 | Status of budget execution and budgetary resources. |
-| GTAS | Trial balance and Treasury-account-level actuals. |
-| Account A / account balances | Balance projection and execution analysis. |
-| Agency apportionments | Budget execution controls and availability context. |
-| USAspending / Data.gov extracts | Public financial and programmatic context. |
+| Data Concept                    | Typical Use                                          |
+|---------------------------------|------------------------------------------------------|
+| SF-133                          | Status of budget execution and budgetary resources.  |
+| GTAS                            | Trial balance and Treasury-account-level actuals.    |
+| Account A / account balances    | Balance projection and execution analysis.           |
+| Agency apportionments           | Budget execution controls and availability context.  |
+| USAspending / Data.gov extracts | Public financial and programmatic context.           |
 | Object class / program activity | Execution analysis by spending category or activity. |
 
 These sources are not hard-coded into the current Streamlit app. They should be prepared as CSV or Excel files before loading into Cutey.
@@ -46,14 +46,14 @@ These sources are not hard-coded into the current Streamlit app. They should be 
 
 Before modeling, confirm:
 
-| Check | Reason |
-|---|---|
-| Duplicate column headers | Duplicate headers can cause pandas to return multiple columns for one name. |
-| Missing values | Missing values affect summary statistics, tests, PCA, clustering, and regression. |
-| Numeric coercion | Some numeric-looking fields may be stored as text. |
-| Period field quality | Time-series aggregation requires a clean year, period, or availability-like column. |
-| Extreme values | Large balances or outliers can dominate regressions and transformations. |
-| Target leakage | Predictors should not include fields that directly encode the target. |
+| Check                     | Reason                                                                              |
+|---------------------------|-------------------------------------------------------------------------------------|
+| Duplicate column headers  | Duplicate headers can cause pandas to return multiple columns for one name.         |
+| Missing values            | Missing values affect summary statistics, tests, PCA, clustering, and regression.   |
+| Numeric coercion          | Some numeric-looking fields may be stored as text.                                  |
+| Period field quality      | Time-series aggregation requires a clean year, period, or availability-like column. |
+| Extreme values            | Large balances or outliers can dominate regressions and transformations.            |
+| Target leakage            | Predictors should not include fields that directly encode the target.               |
 
 ## 🧮 Numeric Columns
 
