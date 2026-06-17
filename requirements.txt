@@ -8,3 +8,9 @@ openpyxl
 xlrd
 streamlit
 streamlit-extras
+mkdocs
+mkdocs-material
+mkdocstrings[python]
+mkdocs-autorefs
+pymdown-extensions
+black
