@@ -46,12 +46,6 @@ A machine-learning toolkit for federal budget execution & accounting implemented
 ![](https://github.com/is-leeroy-jenkins/Cutey/blob/main/resources/assets/Cutey-Py.gif)
 
 
-## 🧱 Databricks
-
-- A data engineering, analytics, and artificial intelligence collaborative workspace
-- Codebase
-
-
 ## 🔍 Predictive Pipeline
 
 #### Balance Projector provides a complete pipeline from raw data ingestion to model deployment, including:
