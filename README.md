@@ -37,21 +37,17 @@ A machine-learning toolkit for federal budget execution & accounting implemented
 
 ## ☁️ Google (Cloud)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/is-leeroy-jenkins/Cutey/blob/main/balances.ipynb)
-
 ![](https://github.com/is-leeroy-jenkins/Cutey/blob/main/resources/assets/Cutey-nb.gif)
 
 
 
 ## 🕸️ Streamlit (Web)
 
-[![Streamlit App](https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white)](https://cutey-py.streamlit.app/)
-
 ![](https://github.com/is-leeroy-jenkins/Cutey/blob/main/resources/assets/Cutey-Py.gif)
 
 
 ## 🧱 Databricks
-[![Databricks Notebook](https://img.shields.io/badge/Databricks%20Repo-Cutey--Py-FF3621?logo=databricks&logoColor=white)](https://dbc-a0c21f80-7bb3.cloud.databricks.com/editor/notebooks/1460524320197786?o=7474645703081351)
+
 - A data engineering, analytics, and artificial intelligence collaborative workspace
 - Codebase
 
