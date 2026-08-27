@@ -6,6 +6,31 @@ ___
 
 A machine-learning toolkit for federal budget execution & accounting implemented in Python. Built using `Scikit`, `TensorFlow`, and `PyTorch`, the notebook integrates structured budget execution data—such as SF-133 reports from OMB and agency-specific datasets from Data.gov—to inform predictive models across multiple federal financial scenarios.
 
+<table>
+<tr>
+<td align="center">
+<img width="255" height="1" alt=""><br>
+<a href="https://cutey-py.streamlit.app/">
+<img src="https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white" alt="Streamlit App">
+</a>
+</td>
+
+<td align="center">
+<img width="255" height="1" alt=""><br>
+<a href="https://colab.research.google.com/github/is-leeroy-jenkins/Cutey/blob/main/balances.ipynb">
+<img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab">
+</a>
+</td>
+
+<td align="center">
+<img width="255" height="1" alt=""><br>
+<a href="https://dbc-a0c21f80-7bb3.cloud.databricks.com/editor/notebooks/1460524320197786?o=7474645703081351">
+<img src="https://img.shields.io/badge/Databricks%20Repo-Cutey--Py-FF3621?logo=databricks&logoColor=white" alt="Databricks Notebook">
+</a>
+</td>
+</tr>
+</table>
+
 ## 🎥 Demo
 
 ![](https://github.com/is-leeroy-jenkins/Cutey/blob/main/resources/assets/cutey-demo.gif)
