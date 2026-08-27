@@ -184,13 +184,6 @@ This will shut down the local Streamlit server safely.
 - Incorporate **Period of Availability (PoA)**, fiscal flags, and **transfer actions**
 - Embed OMB guidance into modeling features (e.g., apportionment limits, program activities)
 
-## 🧾 Integrated Federal Data Templates
-
-- **[SF-133](https://portal.max.gov/portal/document/SF133/Budget/FACTS%20II%20-%20SF%20133%20Report%20on%20Budget%20Execution%20and%20Budgetary%20Resources.html)**: Status of Budget Execution CSV import + reshaping
-- **[GTAS](https://fiscal.treasury.gov/gtas/)**: Trial balance integration for actuals by TAS
-- **[Agency Apportionments](https://openomb.org/)**: XML or CSV-based loader
-- **[Data.gov](https://data.gov/)**: USAspending, object class, and program activity support
-
 ## 📦 Fine-tuning Datasets
 
 
