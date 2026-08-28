@@ -6,7 +6,7 @@ ___
 
 A machine-learning toolkit for federal budget execution & accounting implemented in Python. Built using `Scikit`, `TensorFlow`, and `PyTorch`, the notebook integrates structured budget execution data—such as SF-133 reports from OMB and agency-specific datasets from Data.gov—to inform predictive models across multiple federal financial scenarios.
 
-## Cloud
+## ☁️ Cloud
 
 <table>
 <tr>
