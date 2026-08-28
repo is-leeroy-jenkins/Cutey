@@ -11,12 +11,6 @@ A machine-learning toolkit for federal budget execution & accounting implemented
 <table>
 <tr>
 <td align="center">
-<a href="<LINK>">
-<img src="https://img.shields.io/badge/Docker-App-2496ED?logo=docker&logoColor=white" alt="Docker App">
-</a>
-</td>
-
-<td align="center">
 <img width="191" height="1" alt=""><br>
 <a href="https://cutey-py.streamlit.app/">
 <img src="https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white" alt="Streamlit App">
