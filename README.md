@@ -39,7 +39,7 @@ A machine-learning toolkit for federal budget execution & accounting implemented
 
 <td align="center">
 <a href="https://leeroy.usw-16.palantirfoundry.com/shares/links/tq6dokgd3ezi2">
-<img width="190" src="https://img.shields.io/badge/Palantir%20Foundry-Repository-101113?logo=palantir&logoColor=white" alt="Palantir Repo">
+<img width="190" src="https://img.shields.io/badge/Palantir%20Foundry-Repo-101113?logo=palantir&logoColor=white" alt="Repo">
 </a>
 </td>
 </tr>
